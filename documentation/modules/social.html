@@ -78,6 +78,36 @@
 
 
 
+<h2>Functions</h2>
+<table class="function_list">
+
+	<tr>
+	<td class="name" nowrap><a href="#get">get</a>&nbsp;(soc, host, page, auth)</td>
+	<td class="summary">Makes a GET request.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#newconnection">newconnection</a>&nbsp;(host, port)</td>
+	<td class="summary">Opens a connection to a website.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#post">post</a>&nbsp;(soc, host, page, data, auth)</td>
+	<td class="summary">Makes a POST request.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#removeheaders">removeheaders</a>&nbsp;(data)</td>
+	<td class="summary">Removes the headers from received data.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#request">request</a>&nbsp;(soc, header, ...)</td>
+	<td class="summary">Makes a request.</td>
+	</tr>
+
+</table>
+
 
 
 
@@ -87,6 +117,224 @@
 <br/>
 
 
+
+<h2><a name="functions"></a>Functions</h2>
+<dl class="function">
+
+
+
+<dt><a name="get"></a><strong>get</strong>&nbsp;(soc, host, page, auth)</dt>
+<dd>
+Makes a GET request. Automatically makes a GET request with the given data.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  soc: Target socket.
+	</li>
+	
+	<li>
+	  host: Target hostname.
+	</li>
+	
+	<li>
+	  page: Page/file to get.
+	</li>
+	
+	<li>
+	  auth: (optional) a string that's passed to a basic authorization.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+The return values of the socket's receiving function.
+
+
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/social.html#post">
+		post
+	</a>
+	
+</ul>
+
+</dd>
+
+
+
+
+<dt><a name="newconnection"></a><strong>newconnection</strong>&nbsp;(host, port)</dt>
+<dd>
+Opens a connection to a website.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  host: Hostname of the website (without protocol!)
+	</li>
+	
+	<li>
+	  port: (optional) assumes 80
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="post"></a><strong>post</strong>&nbsp;(soc, host, page, data, auth)</dt>
+<dd>
+Makes a POST request. Automatically makes a POST request with the given data.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  soc: Target socket.
+	</li>
+	
+	<li>
+	  host: Target hostname.
+	</li>
+	
+	<li>
+	  page: Page/file to post to.
+	</li>
+	
+	<li>
+	  data: Data to send.
+	</li>
+	
+	<li>
+	  auth: (optional) a string that's passed to a basic authorization.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+The return values of the socket's receiving function.
+
+
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/social.html#get">
+		get
+	</a>
+	
+</ul>
+
+</dd>
+
+
+
+
+<dt><a name="removeheaders"></a><strong>removeheaders</strong>&nbsp;(data)</dt>
+<dd>
+Removes the headers from received data.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  data: Data to format.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+The formatted data.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="request"></a><strong>request</strong>&nbsp;(soc, header, ...)</dt>
+<dd>
+Makes a request. This functions formats a given string with given arguments and sends the data via the given socket. This is a back-end function.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  soc: Target socket.
+	</li>
+	
+	<li>
+	  header: String (header) to format.
+	</li>
+	
+	<li>
+	  ...: Extra arguments are passed to the format of the header.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+The return values of the socket's receiving function.
+
+
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/social.html#get">
+		get
+	</a>
+	
+	<li><a href="../modules/social.html#post">
+		post
+	</a>
+	
+</ul>
+
+</dd>
+
+
+</dl>
 
 
 
