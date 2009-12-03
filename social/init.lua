@@ -1,4 +1,7 @@
-local socket = require"socket" -- luarocks install luasocket
+local http = require"socket.http" -- luarocks install luasocket
+local mime = require"mime" --                         luasocket
+local url = require"socket.url" --                    luasocket
+local ltn12 = require"ltn12" --                       luasocket
 
 --- SocialLua
 -- @author Bart van Strien (bart.bes@gmail.com)
@@ -8,30 +11,30 @@ module("social", package.seeall) -- seeall for now
 headers = {
 	get = {
 		anon = [[
-GET %s HTTP/1.0
+GET %s HTTP/1.1
 Host: %s
 
 ]],
-		authb = [[
-GET %s HTTP/1.0
+		auth = [[
+GET %s HTTP/1.1
 Host: %s
-Authorization: Basic %s
+Authorization: %s
 
 ]],
 	},
 	post = {
 		anon = [[
-POST %s HTTP/1.0
+POST %s HTTP/1.1
 Host: %s
 Content-type: application/x-www-form-urlencoded
 Content-length: %d
 
 %s
 ]],
-		authb = [[
-POST %s HTTP/1.0
+		auth = [[
+POST %s HTTP/1.1
 Host: %s
-Authorization: Basic %s
+Authorization: %s
 Content-type: application/x-www-form-urlencoded
 Content-length: %d
 
@@ -41,67 +44,50 @@ Content-length: %d
 }
 
 --- Makes a request.
--- This functions formats a given string with given arguments and 
--- sends the data via the given socket. This is a back-end function.
+-- This is a back-end function.
 -- @see get
 -- @see post
--- @param soc Target socket.
--- @param header String (header) to format.
--- @param ... Extra arguments are passed to the format of the header.
--- @return The return values of the socket's receiving function.
-function request(soc, header, ...)
-    local d = string.format(header, ...)
-    assert(soc:send(d))
-    return soc:receive("*all")
+function request(method, url, auth, data)
+	local out = {}
+    local r,c,h = http.request{
+		url = url,
+		method = method:upper(),
+		headers = { authorization = (auth and "Basic "..auth), ["content-type"] = (data and "application/x-www-form-urlencoded"), ["content-length"] = (data and #data) },
+		source = ltn12.source.string(data),
+		sink = ltn12.sink.table(out)
+	}
+	if c == 301 or c == 302 then
+		return request(method, h.location, headers, data)
+	end
+	return ((r and true) or false),table.concat(out),h,c
 end
 
 --- Makes a GET request.
 -- Automatically makes a GET request with the given data.
 -- @see post
--- @param soc Target socket.
--- @param host Target hostname.
--- @param page Page/file to get.
--- @param auth (optional) a string that's passed to a basic authorization.
--- @return The return values of the socket's receiving function.
-function get(soc, host, page, auth)
-	if not auth then
-		return request(soc, headers.get.anon, page, host)
-	else
-		return request(soc, headers.get.authb, page, host, auth)
+function get(url, auth)
+	local r,d,h,c = request("get", url, auth)
+	if not r then
+		return false,h.status
 	end
+	return d,h,c
 end
 
 --- Makes a POST request.
 -- Automatically makes a POST request with the given data.
 -- @see get
--- @param soc Target socket.
--- @param host Target hostname.
--- @param page Page/file to post to.
--- @param data Data to send.
--- @param auth (optional) a string that's passed to a basic authorization.
--- @return The return values of the socket's receiving function.
-function post(soc, host, page, data, auth)
-	if not auth then
-		return request(soc, headers.post.anon, page, host, #data, data)
-	else
-		return request(soc, headers.post.authb, page, host, auth, #data, data)
+function post(url, data, auth)
+	local r,d,h,c = request("post", url, auth, data)
+	if not r then
+		return false,h.status
 	end
+	return d,h,c
 end
 
---- Opens a connection to a website.
--- @param host Hostname of the website (without protocol!)
--- @param port (optional) assumes 80
-function newconnection(host, port)
-	local ip = assert(socket.dns.toip(host))
-	local soc = assert(socket.tcp())
-	assert(soc:connect(ip, port or 80))
-	soc:settimeout(5)
-	return soc
-end
-
---- Removes the headers from received data.
--- @param data Data to format.
--- @return The formatted data.
-function removeheaders(data)
-	return data:match(".-\r\n\r\n(.*)")
+--- Generates a Basic authentication string.
+-- @param username Username
+-- @param password Password
+-- @return The Basic authentication string.
+function authbasic(username, password)
+	return mime.b64(username..":"..password)
 end

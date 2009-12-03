@@ -4,5 +4,8 @@ io.write"Username: "
 username = assert(io.read("*l"), "You must specify a username!")
 io.write"Password: "
 password = assert(io.read("*l"), "You must specify a password!")
+io.write"Status: "
+status = assert(io.read("*l"), "You must specify the status!")
 
-print((tw.tweet("Hello World from SocialLua!", username, password) and "Tweeted!") or "Failed!")
+io.write"Tweeting... "
+print((tw.tweet(status, username, password) and "success!") or "failed!")
