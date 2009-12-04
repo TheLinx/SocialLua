@@ -398,6 +398,23 @@ function client:editList(name, new)
 	end
 end
 
+--- Receives a user's lists.
+-- @param user Username (defaults to currently authed user)
+-- @param cursor (optional) for pagination
+-- @return boolean Success or not.
+-- @return unsigned If success, the new list, if fail, the error message.
+function client:userLists(user, cursor)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.get(full("1/"..(user or self.username).."/lists", "api", {cursor = cursor}), self.auth)
+	if not s then return false, d end
+	local t = json.decode(d)
+	if c ~= 200 then
+		return false,t.error
+	else
+		return true,t
+	end
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
