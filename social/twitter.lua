@@ -184,9 +184,9 @@ function client:homeTimeline(arg)
 	end
 end
 
---- Receives a user's home timeline.
+--- Receives a user's timeline.
 -- The function will use an argument table if supplied, but remember, you 
--- can also supply the arguments in the call: homeTimeline{since_id = 412}
+-- can also supply the arguments in the call: userTimeline{since_id = 412}
 -- For more info on what arguments there are, visit
 -- http://apiwiki.twitter.com/Twitter-REST-API-Method:-statuses-user_timeline
 -- @param arg (optional) A table containing the arguments for the request
@@ -194,6 +194,27 @@ end
 -- @return unsigned If success, the statuses, if fail, the error message.
 function client:userTimeline(id, arg)
 	local s,d,h,c = social.get(full("statuses/user_timeline/"..id, nil, arg or {}), self.auth)
+	if not s then return false,d end
+	local t = json.decode(d)
+	if c ~= 200 then
+		return false,t.error
+	else
+		return true,t
+	end
+end
+
+--- Receives the user's friends timeline.
+-- You must be logged in to do this.
+-- The function will use an argument table if supplied, but remember, you 
+-- can also supply the arguments in the call: friendsTimeline{since_id = 412}
+-- For more info on what arguments there are, visit
+-- http://apiwiki.twitter.com/Twitter-REST-API-Method:-statuses-friends_timeline
+-- @param arg (optional) A table containing the arguments for the request
+-- @return boolean Success or not
+-- @return unsigned If success, the statuses, if fail, the error message.
+function client:friendsTimeline(arg)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.get(full("statuses/friends_timeline", nil, arg or {}), self.auth)
 	if not s then return false,d end
 	local t = json.decode(d)
 	if c ~= 200 then
