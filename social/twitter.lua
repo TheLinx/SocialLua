@@ -132,9 +132,9 @@ function client:retweetStatus(id)
 	end
 end
 
---- Lists retweets of the status.
+--- Lists retweets of a status.
 -- You must be logged in to do this.
--- @param id ID
+-- @param id Status ID
 -- @return boolean Success or not
 -- @return unsigned If success, the retweets, if fail, the error message.
 function client:retweets(id)
@@ -225,11 +225,11 @@ function client:friendsTimeline(arg)
 end
 
 --- Shows information about a user
--- @param id User ID or username.
+-- @param id User ID or username (defaults to currently authenticated user)
 -- @return boolean Success or not
 -- @return unsigned If success, the user, if fail, the error message.
 function client:showUser(id)
-	local s,d,h,c = social.get(full("users/show/"..id), self.auth)
+	local s,d,h,c = social.get(full("users/show/"..(id or self.username)), self.auth)
 	if not s then return false,d end
 	local t = json.decode(d)
 	if c ~= 200 then
@@ -243,7 +243,7 @@ end
 -- You must be logged in to do this.
 -- For information on what arguments you can use: http://apiwiki.twitter.com/Twitter-REST-API-Method:-users-search
 -- @param query Search query.
--- @param arg (optional) arguments.
+-- @param arg (optional) arguments
 -- @return boolean Success or not.
 -- @return unsigned If success, the results, if fail, the error message.
 function client:searchUser(query, arg)
@@ -262,6 +262,7 @@ end
 
 --- Receive tweets where the user was mentioned.
 -- For information on what arguments you can use: http://apiwiki.twitter.com/Twitter-REST-API-Method:-statuses-mentions
+-- @param arg (optional) arguments
 -- @return boolean Success or not.
 -- @return unsigned If success, the mentions, if fail, the error message.
 function client:mentions(arg)
@@ -278,6 +279,7 @@ end
 
 --- Receive retweets by the user.
 -- For information on what arguments you can use: http://apiwiki.twitter.com/Twitter-REST-API-Method:-statuses-retweeted_by_me
+-- @param arg (optional) arguments
 -- @return boolean Success or not.
 -- @return unsigned If success, the statuses, if fail, the error message.
 function client:retweetedByMe(arg)
@@ -294,6 +296,7 @@ end
 
 --- Receive retweets to the user.
 -- For information on what arguments you can use: http://apiwiki.twitter.com/Twitter-REST-API-Method:-statuses-retweeted_to_me
+-- @param arg (optional) arguments
 -- @return boolean Success or not.
 -- @return unsigned If success, the statuses, if fail, the error message.
 function client:retweetedToMe(arg)
@@ -310,11 +313,29 @@ end
 
 --- Receive retweets of the user.
 -- For information on what arguments you can use: http://apiwiki.twitter.com/Twitter-REST-API-Method:-statuses-retweets_of_me
+-- @param arg (optional) arguments
 -- @return boolean Success or not.
 -- @return unsigned If success, the statuses, if fail, the error message.
 function client:retweetsOfMe(arg)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.get(full("1/statuses/retweets_of_me", "api", arg or {}), self.auth)
+	if not s then return false, d end
+	local t = json.decode(d)
+	if c ~= 200 then
+		return false,t.error
+	else
+		return true,t
+	end
+end
+
+--- Receive a user's friends.
+-- For information on what arguments you can use: http://apiwiki.twitter.com/Twitter-REST-API-Method:-statuses friends
+-- @param id User ID or username (defaults to currently authenticated user)
+-- @param arg (optional) arguments
+-- @return boolean Success or not.
+-- @return unsigned If success, the users, if fail, the error message.
+function client:friends(id, arg)
+	local s,d,h,c = social.get(full("statuses/friends/"..(id or self.username), nil, arg or {}), self.auth)
 	if not s then return false, d end
 	local t = json.decode(d)
 	if c ~= 200 then
