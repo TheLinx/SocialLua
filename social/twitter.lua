@@ -380,6 +380,24 @@ function client:createList(name, mode, description)
 	end
 end
 
+--- Edits a list.
+-- For information on what arguments you can use: http://apiwiki.twitter.com/Twitter-REST-API-Method:-POST-lists-id
+-- @param name Name of the list to be edited.
+-- @param new Table with the new information.
+-- @return boolean Success or not.
+-- @return unsigned If success, the new list, if fail, the error message.
+function client:editList(name, new)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.post(full("1/"..self.username.."/lists/"..name, "api"), social.tabletopost(new), self.auth)
+	if not s then return false, d end
+	local t = json.decode(d)
+	if c ~= 200 then
+		return false,t.error
+	else
+		return true,t
+	end
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
