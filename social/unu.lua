@@ -14,8 +14,7 @@ module("social.unu")
 -- @return unsigned If success, the shortened URL, if fail, the error message.
 function shorten(u)
 	assert(type(u) == "string", "bad argument #1 to 'shorten' (string expected, got "..type(u)..")")
-	local u = url.escape(u)
-	local s,d,h,c = social.get("http://u.nu/unu-api-simple?url="..u)
+	local s,d = social.get("http://u.nu/unu-api-simple", {url = u})
 	if not s then return false,d end
 	d = d:gsub("\n", "")
 	if d:find("|") then
