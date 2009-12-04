@@ -148,6 +148,20 @@ function client:retweets(id)
 	end
 end
 
+--- Receives Twitter's public timeline
+-- @return boolean Success or not
+-- @return unsigned If success, the statuses, if fail, the error message.
+function client:publicTimeline()
+	local s,d,h,c = social.get(full("statuses/public_timeline"), self.auth)
+	if not s then return false,d end
+	local t = json.decode(d)
+	if c ~= 200 then
+		return false,t.error
+	else
+		return true,t
+	end
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
