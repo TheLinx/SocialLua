@@ -442,6 +442,18 @@ function client:usersFollowingList(name, user, cursor)
 	return check(s,d,h,c)
 end
 
+--- Subscribes to a list.
+-- You must be logged in to do this.
+-- @param name Name of the list.
+-- @param user Owner of the list. Defaults to the currently authed user.
+-- @return boolean Success or not.
+-- @return unsigned If success, the list, if fail, the error message.
+function client:followList(name, user)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.post(full("1/%s/%s/subscribers", user or self.username, name), nil, self.auth)
+	return check(s,d,h,c)
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
