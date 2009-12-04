@@ -429,6 +429,19 @@ function client:userInList(id, name, user)
 	return check(s,d,h,c)
 end
 
+--- Receives subscribers of a list.
+-- You must be logged in to do this.
+-- @param name Name of the list.
+-- @param user Owner of the list. Defaults to the currently authed user.
+-- @param cursor Used for pagination.
+-- @return boolean Success or not.
+-- @return unsigned If success, the users, if fail, the error message.
+function client:usersFollowingList(name, user, cursor)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.get(full("1/%s/%s/subscribers", user or self.username, name), {cursor = cursor}, self.auth)
+	return check(s,d,h,c)
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
