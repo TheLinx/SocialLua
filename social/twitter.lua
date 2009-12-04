@@ -341,7 +341,7 @@ end
 -- @param user Target user. Defaults to the currently authed user.
 -- @param cursor Used for pagination.
 -- @return boolean Success or not.
--- @return unsigned If success, the statuses, if fail, the error message.
+-- @return unsigned If success, the lists, if fail, the error message.
 function client:userInLists(user, cursor)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.get(full("1/"..(user or self.username).."/lists/memberships", "api", {cursor = cursor}), self.auth)
@@ -353,7 +353,7 @@ end
 -- @param user Target user. Defaults to the currently authed user.
 -- @param cursor Used for pagination.
 -- @return boolean Success or not.
--- @return unsigned If success, the statuses, if fail, the error message.
+-- @return unsigned If success, lists, if fail, the error message.
 function client:userFollowingLists(user, cursor)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.get(full("1/"..(user or self.username).."/lists/subscriptions", "api", {cursor = cursor}), self.auth)
@@ -366,10 +366,27 @@ end
 -- @param user Owner of the list. Defaults to the currently authed user.
 -- @param cursor Used for pagination.
 -- @return boolean Success or not.
--- @return unsigned If success, the statuses, if fail, the error message.
+-- @return unsigned If success, the users, if fail, the error message.
 function client:usersInList(name, user, cursor)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.get(full("1/"..(user or self.username).."/"..name.."/members", "api", {cursor = cursor}), self.auth)
+	return check(s,d,h,c)
+end
+
+--- Adds a user to a list.
+-- You must be logged in to do this.
+-- @param id User ID or username.
+-- @param name Name of the list.
+-- @param user Owner of the list. Defaults to the currently authed user.
+-- @return boolean Success or not.
+-- @return unsigned If success, the list, if fail, the error message.
+function client:addUserToList(id, name, user)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	if type(id) == "string" then
+		local _,t = self:showUser(id)
+		id = t.id
+	end
+	local s,d,h,c = social.post(full("1/"..(user or self.username).."/"..name.."/members", "api"), social.tabletopost{id = id}, self.auth)
 	return check(s,d,h,c)
 end
 
