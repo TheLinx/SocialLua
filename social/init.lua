@@ -35,7 +35,7 @@ function get(url, auth)
 	if not r then
 		return false,h.status
 	end
-	return d,h,c
+	return true,d,h,c
 end
 
 --- Makes a POST request.
@@ -46,7 +46,7 @@ function post(url, data, auth)
 	if not r then
 		return false,h.status
 	end
-	return d,h,c
+	return true,d,h,c
 end
 
 --- Generates a Basic authentication string.

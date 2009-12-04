@@ -86,6 +86,36 @@
 
 
 
+<h2>Functions</h2>
+<table class="function_list">
+
+	<tr>
+	<td class="name" nowrap><a href="#client:login">client:login</a>&nbsp;(username, password)</td>
+	<td class="summary">Attempts authentication with Twitter.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#client:logout">client:logout</a>&nbsp;()</td>
+	<td class="summary">Flushes account info from client.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#client:new">client:new</a>&nbsp;()</td>
+	<td class="summary">Creates a new Twitter client.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#client:tweet">client:tweet</a>&nbsp;(status)</td>
+	<td class="summary">Tweets.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#tweet">tweet</a>&nbsp;(status, username, password)</td>
+	<td class="summary">A simple function to tweet.</td>
+	</tr>
+
+</table>
+
 
 
 
@@ -95,6 +125,156 @@
 <br/>
 
 
+
+<h2><a name="functions"></a>Functions</h2>
+<dl class="function">
+
+
+
+<dt><a name="client:login"></a><strong>client:login</strong>&nbsp;(username, password)</dt>
+<dd>
+Attempts authentication with Twitter.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  username: Username to login with
+	</li>
+	
+	<li>
+	  password: Password of the user
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return values:</h3>
+<ol>
+	
+	<li>boolean Success or not
+	
+	<li>unsigned If success, the signed in user. If fail, the error message.
+	
+</ol>
+
+
+
+</dd>
+
+
+
+
+<dt><a name="client:logout"></a><strong>client:logout</strong>&nbsp;()</dt>
+<dd>
+Flushes account info from client.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="client:new"></a><strong>client:new</strong>&nbsp;()</dt>
+<dd>
+Creates a new Twitter client.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="client:tweet"></a><strong>client:tweet</strong>&nbsp;(status)</dt>
+<dd>
+Tweets. Note that you must be logged in to tweet.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  status: Message to tweet.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return values:</h3>
+<ol>
+	
+	<li>boolean Success or not
+	
+	<li>unsigned If success, the new user info. If fail, the error message.
+	
+</ol>
+
+
+
+</dd>
+
+
+
+
+<dt><a name="tweet"></a><strong>tweet</strong>&nbsp;(status, username, password)</dt>
+<dd>
+A simple function to tweet.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  status: Message to tweet.
+	</li>
+	
+	<li>
+	  username: Username to tweet as.
+	</li>
+	
+	<li>
+	  password: Password of the user.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+boolean Success or not
+
+
+
+</dd>
+
+
+</dl>
 
 
 

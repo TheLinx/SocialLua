@@ -7,5 +7,10 @@ password = assert(io.read("*l"), "You must specify a password!")
 io.write"Status: "
 status = assert(io.read("*l"), "You must specify the status!")
 
-io.write"Tweeting... "
-print((tw.tweet(status, username, password) and "success!") or "failed!")
+io.write"Tweeting... " io.flush()
+local s,m = tw.tweet(status, username, password)
+if s == true then
+	return print"success!"
+else
+	return print("failed! "..m)
+end

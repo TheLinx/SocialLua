@@ -18,6 +18,7 @@ end
 client = {}
 local cl_mt = { __index = client }
 
+--- Creates a new Twitter client.
 function client:new()
 	return setmetatable({authed = false}, cl_mt)
 end
@@ -29,24 +30,8 @@ function cl_mt:__tostring()
 		return "Twitter client, not authed"
 	end
 end
-function client:login(username, password)
-	local auth = social.authbasic(username, password)
-	local d,h,c = assert(social.get(full("account/verify_credentials"), auth))
-	local t = json.decode(d)
-	if c == 401 then
-		self:logout()
-		return false,t.error,h
-	elseif c == 200 then
-		self.authed = true
-		self.auth = auth
-		self.username = username
-		self.user = t
-		return true,t
-	else
-		error("Unexpected response (got code "..c..", expected 200 or 401")
-	end
-end
 
+--- Flushes account info from client.
 function client:logout()
 	self.authed = false
 	self.auth = nil
@@ -54,22 +39,58 @@ function client:logout()
 	self.user = nil
 end
 
-function client:tweet(status)
-	assert(self.authed, "You must be logged in to tweet!")
-	local d = assert(social.post(full("statuses/update"), "status="..url.escape(status), self.auth))
+--- Attempts authentication with Twitter.
+-- @param username Username to login with
+-- @param password Password of the user
+-- @return boolean Success or not
+-- @return unsigned If success, the signed in user. If fail, the error message.
+function client:login(username, password)
+	local auth = social.authbasic(username, password)
+	local s,d,h,c = social.get(full("account/verify_credentials"), auth)
+	if not s then return false,d end
 	local t = json.decode(d)
-	if t.error then
+	if c ~= 200 then
+		self:logout()
 		return false,t.error
 	else
+		self.authed = true
+		self.auth = auth
+		self.username = username
+		self.user = t
 		return true,t
 	end
 end
 
--- simple functions
+--- Tweets.
+-- Note that you must be logged in to tweet.
+-- @param status Message to tweet.
+-- @return boolean Success or not
+-- @return unsigned If success, the new user info. If fail, the error message.
+function client:tweet(status)
+	if not self.authed then return false,"You must be logged in to tweet!" end
+	local s,d,h,c = social.post(full("statuses/update"), "status="..url.escape(status), self.auth)
+	if not s then return false,d end
+	local t = json.decode(d)
+	if c ~= 200 then
+		return false,t.error
+	else
+		self.user = t
+		return true,t
+	end
+end
 
+--[[------------ simple functions --------------]]--
+
+--- A simple function to tweet.
+-- @param status Message to tweet.
+-- @param username Username to tweet as.
+-- @param password Password of the user.
+-- @return boolean Success or not
 function tweet(status, username, password)
 	local cl = client:new()
-	if not cl:login(username, password) then return false end
-	if not cl:tweet(status) then return false end
+	local s,m = cl:login(username, password)
+	if not s then return false,m end
+	local s,m = cl:tweet(status)
+	if not s then return false,m end
 	return true
 end
