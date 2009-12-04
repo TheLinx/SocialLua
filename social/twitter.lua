@@ -454,6 +454,36 @@ function client:followList(name, user)
 	return check(s,d,h,c)
 end
 
+--- Unsubscribes from a list.
+-- You must be logged in to do this.
+-- @param name Name of the list.
+-- @param user Owner of the list. Defaults to the currently authed user.
+-- @return boolean Success or not.
+-- @return unsigned If success, the list, if fail, the error message.
+function client:unfollowList(name, user)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.delete(full("1/%s/%s/subscribers", user or self.username, name), nil, self.auth)
+	return check(s,d,h,c)
+end
+
+--- Checks if a user is subscribing to a list.
+-- You must be logged in to do this.
+-- @param id User ID or username.
+-- @param name Name of the list.
+-- @param user Owner of the list. Defaults to the currently authed user.
+-- @return boolean Success or not.
+-- @return unsigned If success, the user, if fail, the error message.
+function client:userFollowingList(id, name, user)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	if type(id) == "string" then
+		local b,t = self:showUser(id)
+		if not b then return false,t end
+		id = t.id
+	end
+	local s,d,h,c = social.get(full("1/%s/%s/subscribers/%s", user or self.username, name, id), nil, self.auth)
+	return check(s,d,h,c)
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
