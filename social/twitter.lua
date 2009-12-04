@@ -244,13 +244,30 @@ end
 -- For information on what arguments you can use: http://apiwiki.twitter.com/Twitter-REST-API-Method:-users-search
 -- @param query Search query.
 -- @param arg (optional) arguments.
--- @return table Results.
+-- @return boolean Success or not.
+-- @return unsigned If success, the results, if fail, the error message.
 function client:searchUser(query, arg)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local arg = arg or {}
 	arg.q = query
 	local s,d,h,c = social.get(full("1/users/search", "api", arg), self.auth)
 	if not s then return false,d end
+	local t = json.decode(d)
+	if c ~= 200 then
+		return false,t.error
+	else
+		return true,t
+	end
+end
+
+--- Receive tweets where the user was mentioned.
+-- For information on what arguments you can use: http://apiwiki.twitter.com/Twitter-REST-API-Method:-statuses-mentions
+-- @return boolean Success or not.
+-- @return unsigned If success, the mentions, if fail, the error message.
+function client:mentions(arg)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.get(full("statuses/mentions", nil, arg or {}), self.auth)
+	if not s then return false, d end
 	local t = json.decode(d)
 	if c ~= 200 then
 		return false,t.error
