@@ -97,6 +97,16 @@
 	</tr>
 
 	<tr>
+	<td class="name" nowrap><a href="#client:removeStatus">client:removeStatus</a>&nbsp;(id)</td>
+	<td class="summary">Removes a tweet.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#client:retweetStatus">client:retweetStatus</a>&nbsp;(id)</td>
+	<td class="summary">Retweets a tweet.</td>
+	</tr>
+
+	<tr>
 	<td class="name" nowrap><a href="#client:showStatus">client:showStatus</a>&nbsp;(id)</td>
 	<td class="summary">Shows a tweet.</td>
 	</tr>
@@ -163,6 +173,15 @@ Attempts authentication with Twitter.
 
 
 
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../../files/social/twitter.html#client:logout">
+		client:logout
+	</a>
+	
+</ul>
+
 </dd>
 
 
@@ -180,6 +199,15 @@ Flushes account info from client.
 
 
 
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../../files/social/twitter.html#client:login">
+		client:login
+	</a>
+	
+</ul>
+
 </dd>
 
 
@@ -194,6 +222,76 @@ Creates a new Twitter client.
 
 
 
+
+
+
+</dd>
+
+
+
+
+<dt><a name="client:removeStatus"></a><strong>client:removeStatus</strong>&nbsp;(id)</dt>
+<dd>
+Removes a tweet. You must be logged in to remove tweets.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  id: ID
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return values:</h3>
+<ol>
+	
+	<li>boolean Success or not
+	
+	<li>unsigned If success, the tweet, if fail, the error message.
+	
+</ol>
+
+
+
+</dd>
+
+
+
+
+<dt><a name="client:retweetStatus"></a><strong>client:retweetStatus</strong>&nbsp;(id)</dt>
+<dd>
+Retweets a tweet. You must be logged in to retweet.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  id: ID
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return values:</h3>
+<ol>
+	
+	<li>boolean Success or not
+	
+	<li>unsigned If success, the resulting tweet, if fail, the error message.
+	
+</ol>
 
 
 
@@ -267,6 +365,15 @@ Tweets. Note that you must be logged in to tweet.
 
 
 
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../../files/social/twitter.html#tweet">
+		tweet
+	</a>
+	
+</ul>
+
 </dd>
 
 
@@ -303,6 +410,15 @@ A simple function to tweet.
 boolean Success or not
 
 
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../../files/social/twitter.html#client:tweet">
+		client:tweet
+	</a>
+	
+</ul>
 
 </dd>
 

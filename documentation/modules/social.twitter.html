@@ -70,7 +70,7 @@
 
 <h1>Module <code>social.twitter</code></h1>
 
-<p>SocialLua - Twitter module Note: This module is in alpha and functions may change name without prior notice.</p>
+<p>SocialLua - Twitter module. Note: This module is in alpha and functions may change name without prior notice.</p>
 
 <p><b>Authors:</b>
 <table class="authors_list">
@@ -102,6 +102,16 @@
 	<tr>
 	<td class="name" nowrap><a href="#client:new">client:new</a>&nbsp;()</td>
 	<td class="summary">Creates a new Twitter client.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#client:removeStatus">client:removeStatus</a>&nbsp;(id)</td>
+	<td class="summary">Removes a tweet.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#client:retweetStatus">client:retweetStatus</a>&nbsp;(id)</td>
+	<td class="summary">Retweets a tweet.</td>
 	</tr>
 
 	<tr>
@@ -170,6 +180,15 @@ Attempts authentication with Twitter.
 
 
 
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="">
+		client:logout
+	</a>
+	
+</ul>
+
 </dd>
 
 
@@ -187,6 +206,15 @@ Flushes account info from client.
 
 
 
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="">
+		client:login
+	</a>
+	
+</ul>
+
 </dd>
 
 
@@ -201,6 +229,76 @@ Creates a new Twitter client.
 
 
 
+
+
+
+</dd>
+
+
+
+
+<dt><a name="client:removeStatus"></a><strong>client:removeStatus</strong>&nbsp;(id)</dt>
+<dd>
+Removes a tweet. You must be logged in to remove tweets.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  id: ID
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return values:</h3>
+<ol>
+	
+	<li>boolean Success or not
+	
+	<li>unsigned If success, the tweet, if fail, the error message.
+	
+</ol>
+
+
+
+</dd>
+
+
+
+
+<dt><a name="client:retweetStatus"></a><strong>client:retweetStatus</strong>&nbsp;(id)</dt>
+<dd>
+Retweets a tweet. You must be logged in to retweet.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  id: ID
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return values:</h3>
+<ol>
+	
+	<li>boolean Success or not
+	
+	<li>unsigned If success, the resulting tweet, if fail, the error message.
+	
+</ol>
 
 
 
@@ -274,6 +372,15 @@ Tweets. Note that you must be logged in to tweet.
 
 
 
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="../modules/social.twitter.html#tweet">
+		tweet
+	</a>
+	
+</ul>
+
 </dd>
 
 
@@ -310,6 +417,15 @@ A simple function to tweet.
 boolean Success or not
 
 
+
+<h3>See also:</h3>
+<ul>
+	
+	<li><a href="">
+		client:tweet
+	</a>
+	
+</ul>
 
 </dd>
 

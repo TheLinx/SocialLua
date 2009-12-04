@@ -4,16 +4,16 @@ local mime = require"mime" -- luarocks install luasocket
 local url = require"socket.url" --             luasocket
 local json = require"json" --                  json4lua
 
---- SocialLua - Twitter module
+--- SocialLua - Twitter module.
 -- Note: This module is in alpha and functions may change name without prior notice.
 -- @author Bart van Strien (bart.bes@gmail.com)
 -- @author Linus Sjögren (thelinxswe@gmail.com)
 module("social.twitter", package.seeall) -- seeall for now
 
-host = "www.twitter.com"
+host = ".twitter.com"
 
-function full(p)
-	return "http://"..host.."/"..p..".json"
+function full(p,s)
+	return "http://"..(s or "www")..host.."/"..p..".json"
 end
 
 client = {}
@@ -33,6 +33,7 @@ function cl_mt:__tostring()
 end
 
 --- Flushes account info from client.
+-- @see client:login
 function client:logout()
 	self.authed = false
 	self.auth = nil
@@ -45,6 +46,7 @@ end
 -- @param password Password of the user
 -- @return boolean Success or not
 -- @return unsigned If success, the signed in user. If fail, the error message.
+-- @see client:logout
 function client:login(username, password)
 	local auth = social.authbasic(username, password)
 	local s,d,h,c = social.get(full("account/verify_credentials"), auth)
@@ -67,6 +69,7 @@ end
 -- @param status Message to tweet.
 -- @return boolean Success or not
 -- @return unsigned If success, the new user info. If fail, the error message.
+-- @see tweet
 function client:tweet(status)
 	if not self.authed then return false,"You must be logged in to tweet!" end
 	local s,d,h,c = social.post(full("statuses/update"), "status="..url.escape(status), self.auth)
@@ -95,6 +98,40 @@ function client:showStatus(id)
 	end
 end
 
+--- Removes a tweet.
+-- You must be logged in to remove tweets.
+-- @param id ID
+-- @return boolean Success or not
+-- @return unsigned If success, the tweet, if fail, the error message.
+function client:removeStatus(id)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.post(full("statuses/destroy/"..id), "", self.auth)
+	if not s then return false,d end
+	local t = json.decode(d)
+	if c ~= 200 then
+		return false,t.error
+	else
+		return true,t
+	end
+end
+
+--- Retweets a tweet.
+-- You must be logged in to retweet.
+-- @param id ID
+-- @return boolean Success or not
+-- @return unsigned If success, the resulting tweet, if fail, the error message.
+function client:retweetStatus(id)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.post(full("1/statuses/retweet/"..id, "api"), "", self.auth)
+	if not s then return false,d end
+	local t = json.decode(d)
+	if c ~= 200 then
+		return false,t.error
+	else
+		return true,t
+	end
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
@@ -102,6 +139,7 @@ end
 -- @param username Username to tweet as.
 -- @param password Password of the user.
 -- @return boolean Success or not
+-- @see client:tweet
 function tweet(status, username, password)
 	local cl = client:new()
 	local s,m = cl:login(username, password)
