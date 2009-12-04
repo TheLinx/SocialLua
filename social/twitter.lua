@@ -336,6 +336,17 @@ function client:listTweets(name, user, arg)
 	return check(s,d,h,c)
 end
 
+--- Checks what groups a user is member of.
+-- @param user Target user. Defaults to the currently authed user.
+-- @param cursor Used for pagination.
+-- @return boolean Success or not.
+-- @return unsigned If success, the statuses, if fail, the error message.
+function client:userInLists(user, cursor)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.get(full("1/"..(user or self.username).."/lists/memberships", "api", {cursor = cursor}), self.auth)
+	return check(s,d,h,c)
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
