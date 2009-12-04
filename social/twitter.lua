@@ -308,6 +308,22 @@ function client:retweetedToMe(arg)
 	end
 end
 
+--- Receive retweets of the user.
+-- For information on what arguments you can use: http://apiwiki.twitter.com/Twitter-REST-API-Method:-statuses-retweets_of_me
+-- @return boolean Success or not.
+-- @return unsigned If success, the statuses, if fail, the error message.
+function client:retweetsOfMe(arg)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.get(full("1/statuses/retweets_of_me", "api", arg or {}), self.auth)
+	if not s then return false, d end
+	local t = json.decode(d)
+	if c ~= 200 then
+		return false,t.error
+	else
+		return true,t
+	end
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
