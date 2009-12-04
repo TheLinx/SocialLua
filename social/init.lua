@@ -11,6 +11,32 @@ local pairs = pairs
 -- @author Linus Sjögren (thelinxswe@gmail.com)
 module("social")
 
+--- Generates GET arguments from a table.
+-- @param t Table to convert.
+-- @return The Get arguments, as a string.
+function tabletoget(t)
+	local s = "?"
+	for k,v in pairs(t) do
+		s = string.format("%s%s=%s&", s, url.escape(k), url.escape(v))
+	end
+	return s:sub(1,-2)
+end
+
+--- Generates POST arguments from a table.
+-- @param t Table to convert.
+-- @return The POST arguments, as a string.
+function tabletopost(t)
+	return tabletoget(t):sub(2)
+end
+
+--- Generates a Basic authentication string.
+-- @param username Username
+-- @param password Password
+-- @return The Basic authentication string.
+function authbasic(username, password)
+	return mime.b64(username..":"..password)
+end
+
 --- Makes a request.
 -- This is a back-end function.
 function request(method, url, auth, data)
@@ -30,7 +56,7 @@ end
 
 --- Makes a GET request.
 -- Automatically makes a GET request with the given data.
-function get(url, auth, data)
+function get(url, data, auth)
 	local r,d,h,c = request("get", url..tabletoget(data or {}), auth)
 	if not r then
 		return false,h.status
@@ -40,8 +66,8 @@ end
 
 --- Makes a POST request.
 -- Automatically makes a POST request with the given data.
-function post(url, auth, data)
-	local r,d,h,c = request("post", url, auth, data)
+function post(url, data, auth)
+	local r,d,h,c = request("post", url, auth, tabletopost(data or {}))
 	if not r then
 		return false,h.status
 	end
@@ -50,35 +76,10 @@ end
 
 --- Makes a DELETE request.
 -- Automatically makes a DELETE request with the given data.
-function delete(url, auth, data)
-	local r,d,h,c = request("delete", url, auth, data)
+function delete(url, data, auth)
+	local r,d,h,c = request("delete", url, auth, tabletopost(data or {}))
 	if not r then
 		return false,h.status
 	end
 	return true,d,h,c
-end
-
---- Generates a Basic authentication string.
--- @param username Username
--- @param password Password
--- @return The Basic authentication string.
-function authbasic(username, password)
-	return mime.b64(username..":"..password)
-end
---- Generates GET arguments from a table.
--- @param t Table to convert.
--- @return The Get arguments, as a string.
-function tabletoget(t)
-	local s = "?"
-	for k,v in pairs(t) do
-		s = string.format("%s%s=%s&", s, url.escape(k), url.escape(v))
-	end
-	return s:sub(1,-2)
-end
-
---- Generates POST arguments from a table.
--- @param t Table to convert.
--- @return The POST arguments, as a string.
-function tabletopost(t)
-	return tabletoget(t):sub(2)
 end
