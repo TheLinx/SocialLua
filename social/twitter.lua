@@ -362,6 +362,24 @@ function client:followers(id, arg)
 	end
 end
 
+--- Creates a list.
+-- @param name Name of the list.
+-- @param mode (optional) Public or private -- it's public by default
+-- @param description (optional) Description
+-- @return boolean Success or not.
+-- @return unsigned If success, the new list, if fail, the error message.
+function client:createList(name, mode, description)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.post(full("1/"..self.username.."/lists", "api"), social.tabletopost({name = name, mode = mode, description = description}), self.auth)
+	if not s then return false, d end
+	local t = json.decode(d)
+	if c ~= 200 then
+		return false,t.error
+	else
+		return true,t
+	end
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
