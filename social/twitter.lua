@@ -10,10 +10,14 @@ local json = require"json" --                  json4lua
 -- @author Linus Sjögren (thelinxswe@gmail.com)
 module("social.twitter", package.seeall) -- seeall for now
 
-host = ".twitter.com"
+host = "twitter.com"
 
-function full(p,s,a)
-	return "http://"..(s or "www")..host.."/"..p..".json"..social.tabletoget(a or {})
+function full(p, ...)
+	local s = "www"
+	if p:sub(1,1) == "1" then
+		s = "api"
+	end
+	return (string.format("http://%s.%s/%s.json", s, host, string.format(p, ...)))
 end
 
 function check(s,d,h,c)
@@ -59,7 +63,7 @@ end
 -- @see client:logout
 function client:login(username, password)
 	local auth = social.authbasic(username, password)
-	local s,d,h,c = social.get(full("account/verify_credentials"), auth)
+	local s,d,h,c = social.get(full("account/verify_credentials"), nil, auth)
 	if not s then return false,d end
 	local t = json.decode(d)
 	if c ~= 200 then
@@ -82,7 +86,7 @@ end
 -- @see tweet
 function client:tweet(status)
 	if not self.authed then return false,"You must be logged in to tweet!" end
-	local s,d,h,c = social.post(full("statuses/update"), "status="..url.escape(status), self.auth)
+	local s,d,h,c = social.post(full("statuses/update"), {status = status}, self.auth)
 end
 
 --- Shows a tweet.
@@ -90,7 +94,7 @@ end
 -- @return boolean Success or not
 -- @return unsigned If success, the tweet, if fail, the error message.
 function client:showStatus(id)
-	local s,d,h,c = social.get(full("statuses/show/"..id), self.auth)
+	local s,d,h,c = social.get(full("statuses/show/%s", id), nil, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -101,7 +105,7 @@ end
 -- @return unsigned If success, the tweet, if fail, the error message.
 function client:removeStatus(id)
 	if not self.authed then return false,"You must be logged in to do this!" end
-	local s,d,h,c = social.post(full("statuses/destroy/"..id), "", self.auth)
+	local s,d,h,c = social.post(full("statuses/destroy/%s", id), nil, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -112,7 +116,7 @@ end
 -- @return unsigned If success, the resulting tweet, if fail, the error message.
 function client:retweetStatus(id)
 	if not self.authed then return false,"You must be logged in to do this!" end
-	local s,d,h,c = social.post(full("1/statuses/retweet/"..id, "api"), "", self.auth)
+	local s,d,h,c = social.post(full("1/statuses/retweet/%s", id), nil, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -123,7 +127,7 @@ end
 -- @return unsigned If success, the retweets, if fail, the error message.
 function client:retweets(id)
 	if not self.authed then return false,"You must be logged in to do this!" end
-	local s,d,h,c = social.get(full("1/statuses/retweets/"..id, "api"), self.auth)
+	local s,d,h,c = social.get(full("1/statuses/retweets/%s", id), nil, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -131,7 +135,7 @@ end
 -- @return boolean Success or not
 -- @return unsigned If success, the statuses, if fail, the error message.
 function client:publicTimeline()
-	local s,d,h,c = social.get(full("statuses/public_timeline"), self.auth)
+	local s,d,h,c = social.get(full("statuses/public_timeline"), nil, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -146,7 +150,7 @@ end
 -- @return unsigned If success, the statuses, if fail, the error message.
 function client:homeTimeline(arg)
 	if not self.authed then return false,"You must be logged in to do this!" end
-	local s,d,h,c = social.get(full("1/statuses/home_timeline", "api", arg or {}), self.auth)
+	local s,d,h,c = social.get(full("1/statuses/home_timeline"), arg, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -159,7 +163,7 @@ end
 -- @return boolean Success or not
 -- @return unsigned If success, the statuses, if fail, the error message.
 function client:userTimeline(id, arg)
-	local s,d,h,c = social.get(full("statuses/user_timeline/"..id, nil, arg or {}), self.auth)
+	local s,d,h,c = social.get(full("statuses/user_timeline/%s", id), arg, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -174,7 +178,7 @@ end
 -- @return unsigned If success, the statuses, if fail, the error message.
 function client:friendsTimeline(arg)
 	if not self.authed then return false,"You must be logged in to do this!" end
-	local s,d,h,c = social.get(full("statuses/friends_timeline", nil, arg or {}), self.auth)
+	local s,d,h,c = social.get(full("statuses/friends_timeline"), arg, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -183,7 +187,7 @@ end
 -- @return boolean Success or not
 -- @return unsigned If success, the user, if fail, the error message.
 function client:showUser(id)
-	local s,d,h,c = social.get(full("users/show/"..(id or self.username)), self.auth)
+	local s,d,h,c = social.get(full("users/show/%s", (id or self.username)), nil, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -198,7 +202,7 @@ function client:searchUser(query, arg)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local arg = arg or {}
 	arg.q = query
-	local s,d,h,c = social.get(full("1/users/search", "api", arg), self.auth)
+	local s,d,h,c = social.get(full("1/users/search"), arg, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -209,7 +213,7 @@ end
 -- @return unsigned If success, the mentions, if fail, the error message.
 function client:mentions(arg)
 	if not self.authed then return false,"You must be logged in to do this!" end
-	local s,d,h,c = social.get(full("statuses/mentions", nil, arg or {}), self.auth)
+	local s,d,h,c = social.get(full("statuses/mentions"), arg, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -220,7 +224,7 @@ end
 -- @return unsigned If success, the statuses, if fail, the error message.
 function client:retweetedByMe(arg)
 	if not self.authed then return false,"You must be logged in to do this!" end
-	local s,d,h,c = social.get(full("1/statuses/retweeted_by_me", "api", arg or {}), self.auth)
+	local s,d,h,c = social.get(full("1/statuses/retweeted_by_me"), arg, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -231,7 +235,7 @@ end
 -- @return unsigned If success, the statuses, if fail, the error message.
 function client:retweetedToMe(arg)
 	if not self.authed then return false,"You must be logged in to do this!" end
-	local s,d,h,c = social.get(full("1/statuses/retweeted_to_me", "api", arg or {}), self.auth)
+	local s,d,h,c = social.get(full("1/statuses/retweeted_to_me"), arg, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -242,7 +246,7 @@ end
 -- @return unsigned If success, the statuses, if fail, the error message.
 function client:retweetsOfMe(arg)
 	if not self.authed then return false,"You must be logged in to do this!" end
-	local s,d,h,c = social.get(full("1/statuses/retweets_of_me", "api", arg or {}), self.auth)
+	local s,d,h,c = social.get(full("1/statuses/retweets_of_me"), arg, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -253,7 +257,7 @@ end
 -- @return boolean Success or not.
 -- @return unsigned If success, the users, if fail, the error message.
 function client:friends(id, arg)
-	local s,d,h,c = social.get(full("statuses/friends/"..(id or self.username), nil, arg or {}), self.auth)
+	local s,d,h,c = social.get(full("statuses/friends/%s", (id or self.username)), arg, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -264,7 +268,7 @@ end
 -- @return boolean Success or not.
 -- @return unsigned If success, the users, if fail, the error message.
 function client:followers(id, arg)
-	local s,d,h,c = social.get(full("statuses/followers/"..(id or self.username), nil, arg or {}), self.auth)
+	local s,d,h,c = social.get(full("statuses/followers/%s", (id or self.username)), arg, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -276,7 +280,7 @@ end
 -- @return unsigned If success, the new list, if fail, the error message.
 function client:createList(name, mode, description)
 	if not self.authed then return false,"You must be logged in to do this!" end
-	local s,d,h,c = social.post(full("1/"..self.username.."/lists", "api"), social.tabletopost({name = name, mode = mode, description = description}), self.auth)
+	local s,d,h,c = social.post(full("1/%s/lists", self.username), {name = name, mode = mode, description = description}, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -288,7 +292,7 @@ end
 -- @return unsigned If success, the new list, if fail, the error message.
 function client:editList(name, new)
 	if not self.authed then return false,"You must be logged in to do this!" end
-	local s,d,h,c = social.post(full("1/"..self.username.."/lists/"..name, "api"), social.tabletopost(new), self.auth)
+	local s,d,h,c = social.post(full("1/%s/lists/%s", self.username, name), new, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -299,7 +303,7 @@ end
 -- @return unsigned If success, the lists, if fail, the error message.
 function client:userLists(user, cursor)
 	if not self.authed then return false,"You must be logged in to do this!" end
-	local s,d,h,c = social.get(full("1/"..(user or self.username).."/lists", "api", {cursor = cursor}), self.auth)
+	local s,d,h,c = social.get(full("1/%s/lists", user or self.username), {cursor = cursor}, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -310,7 +314,7 @@ end
 -- @return unsigned If success, the list, if fail, the error message.
 function client:list(user, name)
 	if not self.authed then return false,"You must be logged in to do this!" end
-	local s,d,h,c = social.get(full("1/"..user.."/lists/"..name, "api"), self.auth)
+	local s,d,h,c = social.get(full("1/%s/lists/%s", user, name), nil, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -320,7 +324,7 @@ end
 -- @return unsigned If success, the list, if fail, the error message.
 function client:deleteList(name)
 	if not self.authed then return false,"You must be logged in to do this!" end
-	local s,d,h,c = social.delete(full("1/"..self.username.."/lists/"..name, "api"), self.auth)
+	local s,d,h,c = social.delete(full("1/%s/lists/%s", self.username, name), nil, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -332,7 +336,7 @@ end
 -- @return boolean Success or not.
 -- @return unsigned If success, the statuses, if fail, the error message.
 function client:listTweets(name, user, arg)
-	local s,d,h,c = social.get(full("1/"..(user or self.username).."/lists/"..name.."/statuses", "api", arg or {}), self.auth)
+	local s,d,h,c = social.get(full("1/%s/lists/%s/statuses", user or self.username, name), arg, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -344,7 +348,7 @@ end
 -- @return unsigned If success, the lists, if fail, the error message.
 function client:userInLists(user, cursor)
 	if not self.authed then return false,"You must be logged in to do this!" end
-	local s,d,h,c = social.get(full("1/"..(user or self.username).."/lists/memberships", "api", {cursor = cursor}), self.auth)
+	local s,d,h,c = social.get(full("1/%s/lists/memberships", user or self.username), {cursor = cursor}, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -356,7 +360,7 @@ end
 -- @return unsigned If success, lists, if fail, the error message.
 function client:userFollowingLists(user, cursor)
 	if not self.authed then return false,"You must be logged in to do this!" end
-	local s,d,h,c = social.get(full("1/"..(user or self.username).."/lists/subscriptions", "api", {cursor = cursor}), self.auth)
+	local s,d,h,c = social.get(full("1/%s/lists/subscriptions", user or self.username), {cursor = cursor}, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -369,7 +373,7 @@ end
 -- @return unsigned If success, the users, if fail, the error message.
 function client:usersInList(name, user, cursor)
 	if not self.authed then return false,"You must be logged in to do this!" end
-	local s,d,h,c = social.get(full("1/"..(user or self.username).."/"..name.."/members", "api", {cursor = cursor}), self.auth)
+	local s,d,h,c = social.get(full("1/%s/%s/members", user or self.username, name), {cursor = cursor}, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -386,7 +390,7 @@ function client:addUserToList(id, name, user)
 		local _,t = self:showUser(id)
 		id = t.id
 	end
-	local s,d,h,c = social.post(full("1/"..(user or self.username).."/"..name.."/members", "api"), social.tabletopost{id = id}, self.auth)
+	local s,d,h,c = social.post(full("1/%s/%s/members", user or self.username, name), {id = id}, self.auth)
 	return check(s,d,h,c)
 end
 
