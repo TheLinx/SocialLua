@@ -6,7 +6,7 @@ local ltn12 = require"ltn12" --                       luasocket
 --- SocialLua
 -- @author Bart van Strien (bart.bes@gmail.com)
 -- @author Linus Sjögren (thelinxswe@gmail.com)
-module("social", package.seeall) -- seeall for now
+module("social")
 
 --- Makes a request.
 -- This is a back-end function.
