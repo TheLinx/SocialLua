@@ -30,8 +30,8 @@ end
 
 --- Makes a GET request.
 -- Automatically makes a GET request with the given data.
-function get(url, auth)
-	local r,d,h,c = request("get", url, auth)
+function get(url, auth, data)
+	local r,d,h,c = request("get", url..tabletoget(data or {}), auth)
 	if not r then
 		return false,h.status
 	end
@@ -40,7 +40,7 @@ end
 
 --- Makes a POST request.
 -- Automatically makes a POST request with the given data.
-function post(url, data, auth)
+function post(url, auth, data)
 	local r,d,h,c = request("post", url, auth, data)
 	if not r then
 		return false,h.status
@@ -50,8 +50,8 @@ end
 
 --- Makes a DELETE request.
 -- Automatically makes a DELETE request with the given data.
-function delete(url, auth)
-	local r,d,h,c = request("delete", url, auth)
+function delete(url, auth, data)
+	local r,d,h,c = request("delete", url, auth, data)
 	if not r then
 		return false,h.status
 	end
