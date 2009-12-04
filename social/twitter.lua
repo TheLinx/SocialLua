@@ -239,6 +239,26 @@ function client:showUser(id)
 	end
 end
 
+--- Searches for a user.
+-- You must be logged in to do this.
+-- For information on what arguments you can use: http://apiwiki.twitter.com/Twitter-REST-API-Method:-users-search
+-- @param query Search query.
+-- @param arg (optional) arguments.
+-- @return table Results.
+function client:searchUser(query, arg)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local arg = arg or {}
+	arg.q = query
+	local s,d,h,c = social.get(full("1/users/search", "api", arg), self.auth)
+	if not s then return false,d end
+	local t = json.decode(d)
+	if c ~= 200 then
+		return false,t.error
+	else
+		return true,t
+	end
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
