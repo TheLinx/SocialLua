@@ -16,6 +16,16 @@ function full(p,s,a)
 	return "http://"..(s or "www")..host.."/"..p..".json"..social.tabletoget(a or {})
 end
 
+function check(s,d,h,c)
+	if not s then return false,d end
+	local t = json.decode(d)
+	if c ~= 200 then
+		return false,t.error
+	else
+		return true,t
+	end
+end
+
 client = {}
 local cl_mt = { __index = client }
 
@@ -73,14 +83,6 @@ end
 function client:tweet(status)
 	if not self.authed then return false,"You must be logged in to tweet!" end
 	local s,d,h,c = social.post(full("statuses/update"), "status="..url.escape(status), self.auth)
-	if not s then return false,d end
-	local t = json.decode(d)
-	if c ~= 200 then
-		return false,t.error
-	else
-		self.user = t
-		return true,t
-	end
 end
 
 --- Shows a tweet.
@@ -89,13 +91,7 @@ end
 -- @return unsigned If success, the tweet, if fail, the error message.
 function client:showStatus(id)
 	local s,d,h,c = social.get(full("statuses/show/"..id), self.auth)
-	if not s then return false,d end
-	local t = json.decode(d)
-	if c ~= 200 then
-		return false,t.error
-	else
-		return true,t
-	end
+	return check(s,d,h,c)
 end
 
 --- Removes a tweet.
@@ -106,13 +102,7 @@ end
 function client:removeStatus(id)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.post(full("statuses/destroy/"..id), "", self.auth)
-	if not s then return false,d end
-	local t = json.decode(d)
-	if c ~= 200 then
-		return false,t.error
-	else
-		return true,t
-	end
+	return check(s,d,h,c)
 end
 
 --- Retweets a tweet.
@@ -123,13 +113,7 @@ end
 function client:retweetStatus(id)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.post(full("1/statuses/retweet/"..id, "api"), "", self.auth)
-	if not s then return false,d end
-	local t = json.decode(d)
-	if c ~= 200 then
-		return false,t.error
-	else
-		return true,t
-	end
+	return check(s,d,h,c)
 end
 
 --- Lists retweets of a status.
@@ -140,13 +124,7 @@ end
 function client:retweets(id)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.get(full("1/statuses/retweets/"..id, "api"), self.auth)
-	if not s then return false,d end
-	local t = json.decode(d)
-	if c ~= 200 then
-		return false,t.error
-	else
-		return true,t
-	end
+	return check(s,d,h,c)
 end
 
 --- Receives Twitter's public timeline
@@ -154,13 +132,7 @@ end
 -- @return unsigned If success, the statuses, if fail, the error message.
 function client:publicTimeline()
 	local s,d,h,c = social.get(full("statuses/public_timeline"), self.auth)
-	if not s then return false,d end
-	local t = json.decode(d)
-	if c ~= 200 then
-		return false,t.error
-	else
-		return true,t
-	end
+	return check(s,d,h,c)
 end
 
 --- Receives the user's home timeline.
@@ -175,13 +147,7 @@ end
 function client:homeTimeline(arg)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.get(full("1/statuses/home_timeline", "api", arg or {}), self.auth)
-	if not s then return false,d end
-	local t = json.decode(d)
-	if c ~= 200 then
-		return false,t.error
-	else
-		return true,t
-	end
+	return check(s,d,h,c)
 end
 
 --- Receives a user's timeline.
@@ -194,13 +160,7 @@ end
 -- @return unsigned If success, the statuses, if fail, the error message.
 function client:userTimeline(id, arg)
 	local s,d,h,c = social.get(full("statuses/user_timeline/"..id, nil, arg or {}), self.auth)
-	if not s then return false,d end
-	local t = json.decode(d)
-	if c ~= 200 then
-		return false,t.error
-	else
-		return true,t
-	end
+	return check(s,d,h,c)
 end
 
 --- Receives the user's friends timeline.
@@ -215,13 +175,7 @@ end
 function client:friendsTimeline(arg)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.get(full("statuses/friends_timeline", nil, arg or {}), self.auth)
-	if not s then return false,d end
-	local t = json.decode(d)
-	if c ~= 200 then
-		return false,t.error
-	else
-		return true,t
-	end
+	return check(s,d,h,c)
 end
 
 --- Shows information about a user
@@ -230,13 +184,7 @@ end
 -- @return unsigned If success, the user, if fail, the error message.
 function client:showUser(id)
 	local s,d,h,c = social.get(full("users/show/"..(id or self.username)), self.auth)
-	if not s then return false,d end
-	local t = json.decode(d)
-	if c ~= 200 then
-		return false,t.error
-	else
-		return true,t
-	end
+	return check(s,d,h,c)
 end
 
 --- Searches for a user.
@@ -251,13 +199,7 @@ function client:searchUser(query, arg)
 	local arg = arg or {}
 	arg.q = query
 	local s,d,h,c = social.get(full("1/users/search", "api", arg), self.auth)
-	if not s then return false,d end
-	local t = json.decode(d)
-	if c ~= 200 then
-		return false,t.error
-	else
-		return true,t
-	end
+	return check(s,d,h,c)
 end
 
 --- Receive tweets where the user was mentioned.
@@ -268,13 +210,7 @@ end
 function client:mentions(arg)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.get(full("statuses/mentions", nil, arg or {}), self.auth)
-	if not s then return false, d end
-	local t = json.decode(d)
-	if c ~= 200 then
-		return false,t.error
-	else
-		return true,t
-	end
+	return check(s,d,h,c)
 end
 
 --- Receive retweets by the user.
@@ -285,13 +221,7 @@ end
 function client:retweetedByMe(arg)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.get(full("1/statuses/retweeted_by_me", "api", arg or {}), self.auth)
-	if not s then return false, d end
-	local t = json.decode(d)
-	if c ~= 200 then
-		return false,t.error
-	else
-		return true,t
-	end
+	return check(s,d,h,c)
 end
 
 --- Receive retweets to the user.
@@ -302,13 +232,7 @@ end
 function client:retweetedToMe(arg)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.get(full("1/statuses/retweeted_to_me", "api", arg or {}), self.auth)
-	if not s then return false, d end
-	local t = json.decode(d)
-	if c ~= 200 then
-		return false,t.error
-	else
-		return true,t
-	end
+	return check(s,d,h,c)
 end
 
 --- Receive retweets of the user.
@@ -319,13 +243,7 @@ end
 function client:retweetsOfMe(arg)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.get(full("1/statuses/retweets_of_me", "api", arg or {}), self.auth)
-	if not s then return false, d end
-	local t = json.decode(d)
-	if c ~= 200 then
-		return false,t.error
-	else
-		return true,t
-	end
+	return check(s,d,h,c)
 end
 
 --- Receive a user's friends.
@@ -336,13 +254,7 @@ end
 -- @return unsigned If success, the users, if fail, the error message.
 function client:friends(id, arg)
 	local s,d,h,c = social.get(full("statuses/friends/"..(id or self.username), nil, arg or {}), self.auth)
-	if not s then return false, d end
-	local t = json.decode(d)
-	if c ~= 200 then
-		return false,t.error
-	else
-		return true,t
-	end
+	return check(s,d,h,c)
 end
 
 --- Receive a user's followers.
@@ -353,13 +265,7 @@ end
 -- @return unsigned If success, the users, if fail, the error message.
 function client:followers(id, arg)
 	local s,d,h,c = social.get(full("statuses/followers/"..(id or self.username), nil, arg or {}), self.auth)
-	if not s then return false, d end
-	local t = json.decode(d)
-	if c ~= 200 then
-		return false,t.error
-	else
-		return true,t
-	end
+	return check(s,d,h,c)
 end
 
 --- Creates a list.
@@ -371,13 +277,7 @@ end
 function client:createList(name, mode, description)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.post(full("1/"..self.username.."/lists", "api"), social.tabletopost({name = name, mode = mode, description = description}), self.auth)
-	if not s then return false, d end
-	local t = json.decode(d)
-	if c ~= 200 then
-		return false,t.error
-	else
-		return true,t
-	end
+	return check(s,d,h,c)
 end
 
 --- Edits a list.
@@ -389,30 +289,29 @@ end
 function client:editList(name, new)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.post(full("1/"..self.username.."/lists/"..name, "api"), social.tabletopost(new), self.auth)
-	if not s then return false, d end
-	local t = json.decode(d)
-	if c ~= 200 then
-		return false,t.error
-	else
-		return true,t
-	end
+	return check(s,d,h,c)
 end
 
 --- Receives a user's lists.
 -- @param user Username (defaults to currently authed user)
 -- @param cursor (optional) for pagination
 -- @return boolean Success or not.
--- @return unsigned If success, the new list, if fail, the error message.
+-- @return unsigned If success, the lists, if fail, the error message.
 function client:userLists(user, cursor)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.get(full("1/"..(user or self.username).."/lists", "api", {cursor = cursor}), self.auth)
-	if not s then return false, d end
-	local t = json.decode(d)
-	if c ~= 200 then
-		return false,t.error
-	else
-		return true,t
-	end
+	return check(s,d,h,c)
+end
+
+--- Receives a list.
+-- @param user Owner of the list.
+-- @param name Name of the list.
+-- @return boolean Success or not.
+-- @return unsigned If success, the list, if fail, the error message.
+function client:list(user, name)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.get(full("1/"..user.."/lists/"..name, "api"), self.auth)
+	return check(s,d,h,c)
 end
 
 --[[------------ simple functions --------------]]--
