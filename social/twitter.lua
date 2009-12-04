@@ -345,6 +345,23 @@ function client:friends(id, arg)
 	end
 end
 
+--- Receive a user's followers.
+-- For information on what arguments you can use: http://apiwiki.twitter.com/Twitter-REST-API-Method:-statuses followers
+-- @param id User ID or username (defaults to currently authenticated user)
+-- @param arg (optional) arguments
+-- @return boolean Success or not.
+-- @return unsigned If success, the users, if fail, the error message.
+function client:followers(id, arg)
+	local s,d,h,c = social.get(full("statuses/followers/"..(id or self.username), nil, arg or {}), self.auth)
+	if not s then return false, d end
+	local t = json.decode(d)
+	if c ~= 200 then
+		return false,t.error
+	else
+		return true,t
+	end
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
