@@ -484,6 +484,53 @@ function client:userFollowingList(id, name, user)
 	return check(s,d,h,c)
 end
 
+--- Retrieves a list of direct messages to the authed user.
+-- You must be logged in to do this.
+-- For information on what arguments you can use: http://apiwiki.twitter.com/Twitter-REST-API-Method:-direct_messages
+-- @param arg (optional) arguments
+-- @return boolean Success or not.
+-- @return unsigned If success, the messages, if fail, the error message.
+function client:directMessages(arg)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.get(full("direct_messages"), arg, self.auth)
+	return check(s,d,h,c)
+end
+
+--- Retrieves a list of direct messages from the authed user.
+-- You must be logged in to do this.
+-- For information on what arguments you can use: http://apiwiki.twitter.com/Twitter-REST-API-Method:-direct_messages sent
+-- @param arg (optional) arguments
+-- @return boolean Success or not.
+-- @return unsigned If success, the messages, if fail, the error message.
+function client:sentDirectMessages(arg)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.get(full("direct_messages/sent"), arg, self.auth)
+	return check(s,d,h,c)
+end
+
+--- Sends a direct message to another user.
+-- You must be logged in to do this.
+-- @param user User ID or username.
+-- @param text Message to send.
+-- @return boolean Success or not.
+-- @return unsigned If success, the messages, if fail, the error message.
+function client:directMessage(user, text)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.post(full("direct_messages/new"), {user = user, text = text}, self.auth)
+	return check(s,d,h,c)
+end
+
+--- Deletes a direct message.
+-- You must be logged in to do this.
+-- @param id Message ID.
+-- @return boolean Success or not.
+-- @return unsigned If success, the messages, if fail, the error message.
+function client:deleteDirectMessage(id)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.post(full("direct_messages/destroy/%s", id), nil, self.auth)
+	return check(s,d,h,c)
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
