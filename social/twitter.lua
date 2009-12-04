@@ -411,6 +411,24 @@ function client:removeUserFromList(id, name, user)
 	return check(s,d,h,c)
 end
 
+--- Checks if a user is in a list.
+-- You must be logged in to do this.
+-- @param id User ID or username.
+-- @param name Name of the list.
+-- @param user Owner of the list. Defaults to the currently authed user.
+-- @return boolean Success or not.
+-- @return unsigned If success, the users, if fail, the error message.
+function client:userInList(id, name, user)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	if type(id) == "string" then
+		local b,t = self:showUser(id)
+		if not b then return false,t end
+		id = t.id
+	end
+	local s,d,h,c = social.get(full("1/%s/%s/members/%s", user or self.username, name, id), nil, self.auth)
+	return check(s,d,h,c)
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
