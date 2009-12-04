@@ -58,3 +58,14 @@ end
 function authbasic(username, password)
 	return mime.b64(username..":"..password)
 end
+
+--- Generates GET arguments from a table.
+-- @param t Table to convert.
+-- @return The Get arguments, as a string.
+function tabletoget(t)
+	local s = "?"
+	for k,v in pairs(t) do
+		s = string.format("%s%s=%s&", s, url.escape(k), url.escape(v))
+	end
+	return s:sub(1,-2)
+end
