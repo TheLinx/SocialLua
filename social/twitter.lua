@@ -224,6 +224,21 @@ function client:friendsTimeline(arg)
 	end
 end
 
+--- Shows information about a user
+-- @param id User ID or username.
+-- @return boolean Success or not
+-- @return unsigned If success, the user, if fail, the error message.
+function client:showUser(id)
+	local s,d,h,c = social.get(full("users/show/"..id), self.auth)
+	if not s then return false,d end
+	local t = json.decode(d)
+	if c ~= 200 then
+		return false,t.error
+	else
+		return true,t
+	end
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
