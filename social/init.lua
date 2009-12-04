@@ -3,6 +3,8 @@ local mime = require"mime" --                         luasocket
 local url = require"socket.url" --                    luasocket
 local ltn12 = require"ltn12" --                       luasocket
 
+local table = table
+
 --- SocialLua
 -- @author Bart van Strien (bart.bes@gmail.com)
 -- @author Linus Sjögren (thelinxswe@gmail.com)

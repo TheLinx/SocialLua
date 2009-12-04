@@ -107,6 +107,11 @@
 	</tr>
 
 	<tr>
+	<td class="name" nowrap><a href="#client:retweets">client:retweets</a>&nbsp;(id)</td>
+	<td class="summary">Lists retweets of the status.</td>
+	</tr>
+
+	<tr>
 	<td class="name" nowrap><a href="#client:showStatus">client:showStatus</a>&nbsp;(id)</td>
 	<td class="summary">Shows a tweet.</td>
 	</tr>
@@ -290,6 +295,41 @@ Retweets a tweet. You must be logged in to retweet.
 	<li>boolean Success or not
 	
 	<li>unsigned If success, the resulting tweet, if fail, the error message.
+	
+</ol>
+
+
+
+</dd>
+
+
+
+
+<dt><a name="client:retweets"></a><strong>client:retweets</strong>&nbsp;(id)</dt>
+<dd>
+Lists retweets of the status.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  id: ID
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return values:</h3>
+<ol>
+	
+	<li>boolean Success or not
+	
+	<li>unsigned If success, the retweets, if fail, the error message.
 	
 </ol>
 

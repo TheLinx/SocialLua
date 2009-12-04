@@ -132,6 +132,22 @@ function client:retweetStatus(id)
 	end
 end
 
+--- Lists retweets of the status.
+-- @param id ID
+-- @return boolean Success or not
+-- @return unsigned If success, the retweets, if fail, the error message.
+function client:retweets(id)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.get(full("1/statuses/retweets/"..id, "api"), self.auth)
+	if not s then return false,d end
+	local t = json.decode(d)
+	if c ~= 200 then
+		return false,t.error
+	else
+		return true,t
+	end
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
