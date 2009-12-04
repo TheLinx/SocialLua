@@ -5,6 +5,7 @@ local url = require"socket.url" --             luasocket
 local json = require"json" --                  json4lua
 
 --- SocialLua - Twitter module
+-- Note: This module is in alpha and functions may change name without prior notice.
 -- @author Bart van Strien (bart.bes@gmail.com)
 -- @author Linus Sjögren (thelinxswe@gmail.com)
 module("social.twitter", package.seeall) -- seeall for now
@@ -75,6 +76,21 @@ function client:tweet(status)
 		return false,t.error
 	else
 		self.user = t
+		return true,t
+	end
+end
+
+--- Shows a tweet.
+-- @param id ID
+-- @return boolean Success or not
+-- @return unsigned If success, the tweet, if fail, the error message.
+function client:showStatus(id)
+	local s,d,h,c = social.get(full("statuses/show/"..id), self.auth)
+	if not s then return false,d end
+	local t = json.decode(d)
+	if c ~= 200 then
+		return false,t.error
+	else
 		return true,t
 	end
 end

@@ -70,7 +70,7 @@
 
 <h1>Module <code>social.twitter</code></h1>
 
-<p>SocialLua - Twitter module</p>
+<p>SocialLua - Twitter module Note: This module is in alpha and functions may change name without prior notice.</p>
 
 <p><b>Authors:</b>
 <table class="authors_list">
@@ -102,6 +102,11 @@
 	<tr>
 	<td class="name" nowrap><a href="#client:new">client:new</a>&nbsp;()</td>
 	<td class="summary">Creates a new Twitter client.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#client:showStatus">client:showStatus</a>&nbsp;(id)</td>
+	<td class="summary">Shows a tweet.</td>
 	</tr>
 
 	<tr>
@@ -196,6 +201,41 @@ Creates a new Twitter client.
 
 
 
+
+
+
+</dd>
+
+
+
+
+<dt><a name="client:showStatus"></a><strong>client:showStatus</strong>&nbsp;(id)</dt>
+<dd>
+Shows a tweet.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  id: ID
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return values:</h3>
+<ol>
+	
+	<li>boolean Success or not
+	
+	<li>unsigned If success, the tweet, if fail, the error message.
+	
+</ol>
 
 
 
