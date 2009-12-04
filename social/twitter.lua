@@ -325,7 +325,7 @@ function client:deleteList(name)
 end
 
 --- Receives tweets from a list.
--- For information on what arguments you can use: hhttp://apiwiki.twitter.com/Twitter-REST-API-Method:-GET-list-statuses
+-- For information on what arguments you can use: http://apiwiki.twitter.com/Twitter-REST-API-Method:-GET-list-statuses
 -- @param name Name of the list.
 -- @param user Owner of the list. Defaults to the currently authed user.
 -- @param arg (optional) arguments
@@ -337,6 +337,7 @@ function client:listTweets(name, user, arg)
 end
 
 --- Checks what lists a user is in.
+-- You must be logged in to do this.
 -- @param user Target user. Defaults to the currently authed user.
 -- @param cursor Used for pagination.
 -- @return boolean Success or not.
@@ -348,6 +349,7 @@ function client:userInLists(user, cursor)
 end
 
 --- Checks what lists a user is following.
+-- You must be logged in to do this.
 -- @param user Target user. Defaults to the currently authed user.
 -- @param cursor Used for pagination.
 -- @return boolean Success or not.
@@ -355,6 +357,19 @@ end
 function client:userFollowingLists(user, cursor)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.get(full("1/"..(user or self.username).."/lists/subscriptions", "api", {cursor = cursor}), self.auth)
+	return check(s,d,h,c)
+end
+
+--- Receives users in a list.
+-- You must be logged in to do this.
+-- @param name Name of the list.
+-- @param user Owner of the list. Defaults to the currently authed user.
+-- @param cursor Used for pagination.
+-- @return boolean Success or not.
+-- @return unsigned If success, the statuses, if fail, the error message.
+function client:usersInList(name, user, cursor)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.get(full("1/"..(user or self.username).."/"..name.."/members", "api", {cursor = cursor}), self.auth)
 	return check(s,d,h,c)
 end
 
