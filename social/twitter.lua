@@ -324,6 +324,18 @@ function client:deleteList(name)
 	return check(s,d,h,c)
 end
 
+--- Receives tweets from a list.
+-- For information on what arguments you can use: hhttp://apiwiki.twitter.com/Twitter-REST-API-Method:-GET-list-statuses
+-- @param name Name of the list.
+-- @param user Owner of the list. Defaults to the currently authed user.
+-- @param arg (optional) arguments
+-- @return boolean Success or not.
+-- @return unsigned If success, the statuses, if fail, the error message.
+function client:listTweets(name, user, arg)
+	local s,d,h,c = social.get(full("1/"..(user or self.username).."/lists/"..name.."/statuses", "api", arg or {}), self.auth)
+	return check(s,d,h,c)
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
