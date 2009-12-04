@@ -165,22 +165,35 @@ end
 
 --- Receives the user's home timeline.
 -- You must be logged in to do this.
--- The function will use an argument table if supplied, but you can also
--- supply the arguments yourself with :homeTimeline{since_id = 412}
+-- The function will use an argument table if supplied, but remember, you 
+-- can also supply the arguments in the call: homeTimeline{since_id = 412}
 -- For more info on what arguments there are, visit
 -- http://apiwiki.twitter.com/Twitter-REST-API-Method:-statuses-home_timeline
--- @param arg A table containing the arguments for the request
--- @param since_id 
+-- @param arg (optional) A table containing the arguments for the request
 -- @return boolean Success or not
 -- @return unsigned If success, the statuses, if fail, the error message.
 function client:homeTimeline(arg)
 	if not self.authed then return false,"You must be logged in to do this!" end
-	local arg = arg or {}
-		arg.since_id = arg.since_id or since_id
-		arg.max_id = arg.max_id or max_id
-		arg.count = arg.count or count
-		arg.page = arg.page or page
-	local s,d,h,c = social.get(full("1/statuses/home_timeline", "api", arg), self.auth)
+	local s,d,h,c = social.get(full("1/statuses/home_timeline", "api", arg or {}), self.auth)
+	if not s then return false,d end
+	local t = json.decode(d)
+	if c ~= 200 then
+		return false,t.error
+	else
+		return true,t
+	end
+end
+
+--- Receives a user's home timeline.
+-- The function will use an argument table if supplied, but remember, you 
+-- can also supply the arguments in the call: homeTimeline{since_id = 412}
+-- For more info on what arguments there are, visit
+-- http://apiwiki.twitter.com/Twitter-REST-API-Method:-statuses-user_timeline
+-- @param arg (optional) A table containing the arguments for the request
+-- @return boolean Success or not
+-- @return unsigned If success, the statuses, if fail, the error message.
+function client:userTimeline(id, arg)
+	local s,d,h,c = social.get(full("statuses/user_timeline/"..id, nil, arg or {}), self.auth)
 	if not s then return false,d end
 	local t = json.decode(d)
 	if c ~= 200 then
