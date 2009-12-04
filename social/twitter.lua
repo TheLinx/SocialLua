@@ -394,6 +394,23 @@ function client:addUserToList(id, name, user)
 	return check(s,d,h,c)
 end
 
+--- Removes a user from a list.
+-- You must be logged in to do this.
+-- @param id User ID or username.
+-- @param name Name of the list.
+-- @param user Owner of the list. Defaults to the currently authed user.
+-- @return boolean Success or not.
+-- @return unsigned If success, the list, if fail, the error message.
+function client:removeUserFromList(id, name, user)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	if type(id) == "string" then
+		local _,t = self:showUser(id)
+		id = t.id
+	end
+	local s,d,h,c = social.delete(full("1/%s/%s/members", user or self.username, name), {id = id}, self.auth)
+	return check(s,d,h,c)
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
