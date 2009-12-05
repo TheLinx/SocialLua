@@ -705,6 +705,16 @@ function client:blocking(page)
 	return check(s,d,h,c)
 end
 
+--- Receives a list of ids that the authed user is blocking.
+-- You must be logged in to do this.
+-- @return boolean Success or not.
+-- @return unsigned If success, the user, if fail, the error message.
+function client:blockingIds()
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.get(full("blocks/blocking/ids"), nil, self.auth)
+	return check(s,d,h,c)
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
