@@ -628,6 +628,18 @@ function client:updateProfileColors(new)
 	return check(s,d,h,c)
 end
 
+--- Receives a list of that user's favorite tweets.
+-- You must be logged in to do this.
+-- @param user User ID or username. Defaults to currently authed user.
+-- @param page Used for pagination.
+-- @return boolean Success or not.
+-- @return unsigned If success, the ids, if fail, the error message.
+function client:favorites(user, page)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.get(full("favorites/%s", user or self.username), {page = page}, self.auth)
+	return check(s,d,h,c)
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
