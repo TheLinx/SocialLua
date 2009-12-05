@@ -553,6 +553,16 @@ function client:unfollow(user)
 	return check(s,d,h,c)
 end
 
+--- Checks if a user is following another user.
+-- @param usera Is this user...
+-- @param userb ...following this user?
+-- @return boolean Success or not.
+-- @return unsigned If success, the messages, if fail, the error message.
+function client:isFollowing(usera, userb)
+	local s,d,h,c = social.get(full("friendships/exists"), {user_a = usera, user_b = userb}, self.auth)
+	return check(s,d,h,c)
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
