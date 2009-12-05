@@ -801,3 +801,19 @@ function follow(user, username, password)
 	if not s then return false,m end
 	return true
 end
+
+--- A simple function to unfollow a user.
+-- @param user Username to unfollow.
+-- @param username Username to login as.
+-- @param password Password of the user.
+-- @return boolean Success or not
+-- @return unsigned If fail, the error message. If success, nil.
+-- @see client:unfollow
+function unfollow(user, username, password)
+	local cl = client:new()
+	local s,m = cl:login(username, password)
+	if not s then return false,m end
+	local s,m = cl:unfollow(user)
+	if not s then return false,m end
+	return true
+end
