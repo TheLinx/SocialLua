@@ -736,6 +736,17 @@ function client:savedSearches()
 	return check(s,d,h,c)
 end
 
+--- Receives info about a user's saved search.
+-- You must be logged in to do this.
+-- @param id ID of the saved search.
+-- @return boolean Success or not.
+-- @return unsigned If success, the searches, if fail, the error message.
+function client:savedSearch(id)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.get(full("saved_searches/show/%s", id), nil, self.auth)
+	return check(s,d,h,c)
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
