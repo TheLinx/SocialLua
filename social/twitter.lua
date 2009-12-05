@@ -508,18 +508,6 @@ function client:sentDirectMessages(arg)
 	return check(s,d,h,c)
 end
 
---- Sends a direct message to another user.
--- You must be logged in to do this.
--- @param user User ID or username.
--- @param text Message to send.
--- @return boolean Success or not.
--- @return unsigned If success, the messages, if fail, the error message.
-function client:directMessage(user, text)
-	if not self.authed then return false,"You must be logged in to do this!" end
-	local s,d,h,c = social.post(full("direct_messages/new"), {user = user, text = text}, self.auth)
-	return check(s,d,h,c)
-end
-
 --- Deletes a direct message.
 -- You must be logged in to do this.
 -- @param id Message ID.
@@ -528,17 +516,6 @@ end
 function client:deleteDirectMessage(id)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.post(full("direct_messages/destroy/%s", id), nil, self.auth)
-	return check(s,d,h,c)
-end
-
---- Follows a user.
--- You must be logged in to do this.
--- @param user User ID or username.
--- @return boolean Success or not.
--- @return unsigned If success, the user, if fail, the error message.
-function client:follow(user)
-	if not self.authed then return false,"You must be logged in to do this!" end
-	local s,d,h,c = social.post(full("friendships/create/%s", user), nil, self.auth)
 	return check(s,d,h,c)
 end
 
@@ -681,6 +658,17 @@ end
 function client:unfollowDevice(user)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.post(full("notifications/leave/%s", user), nil, self.auth)
+	return check(s,d,h,c)
+end
+
+--- Blocks a user.
+-- You must be logged in to do this.
+-- @param user User ID or username.
+-- @return boolean Success or not.
+-- @return unsigned If success, the user, if fail, the error message.
+function client:block(user)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.post(full("blocks/create/%s", user), nil, self.auth)
 	return check(s,d,h,c)
 end
 
