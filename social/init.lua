@@ -34,7 +34,7 @@ end
 -- @param password Password
 -- @return The Basic authentication string.
 function authbasic(username, password)
-	return mime.b64(username..":"..password)
+	return "Basic "..mime.b64(username..":"..password)
 end
 
 --- Makes a request.
@@ -44,7 +44,7 @@ function request(method, url, auth, data)
     local r,c,h = http.request{
 		url = url,
 		method = method:upper(),
-		headers = { authorization = (auth and "Basic "..auth), ["content-type"] = (data and "application/x-www-form-urlencoded"), ["content-length"] = (data and #data) },
+		headers = { authorization = auth, ["content-type"] = (data and "application/x-www-form-urlencoded"), ["content-length"] = (data and #data) },
 		source = ltn12.source.string(data),
 		sink = ltn12.sink.table(out)
 	}
