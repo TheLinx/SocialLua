@@ -575,7 +575,7 @@ function client:showFriendship(target, source)
 	else
 		arg.target_screen_name = target
 	end
-	if tostring(source) then
+	if tonumber(source) then
 		arg.source_id = source
 	elseif source then
 		arg.source_screen_name = source
