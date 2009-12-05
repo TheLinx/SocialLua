@@ -651,6 +651,17 @@ function client:addFavorite(id)
 	return check(s,d,h,c)
 end
 
+--- Removes a favorite tweet.
+-- You must be logged in to do this.
+-- @param id Status ID.
+-- @return boolean Success or not.
+-- @return unsigned If success, the status, if fail, the error message.
+function client:removeFavorite(id)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.post(full("favorites/destroy/%s", id), nil, self.auth)
+	return check(s,d,h,c)
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
