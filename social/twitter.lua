@@ -12,7 +12,7 @@ module("social.twitter", package.seeall) -- seeall for now
 
 host = "twitter.com"
 
-function full(p, ...)
+local function full(p, ...)
 	local s = "www"
 	if p:sub(1,1) == "1" then
 		s = "api"
@@ -20,7 +20,7 @@ function full(p, ...)
 	return (string.format("http://%s.%s/%s.json", s, host, string.format(p, ...)))
 end
 
-function check(s,d,h,c)
+local function check(s,d,h,c)
 	if not s then return false,d end
 	local t = json.decode(d)
 	if c ~= 200 then
@@ -47,7 +47,6 @@ function cl_mt:__tostring()
 end
 
 --- Flushes account info from client.
--- @see client:login
 function client:logout()
 	self.authed = false
 	self.auth = nil
@@ -60,7 +59,6 @@ end
 -- @param password Password of the user
 -- @return boolean Success or not
 -- @return unsigned If success, the signed in user. If fail, the error message.
--- @see client:logout
 function client:login(username, password)
 	local auth = social.authbasic(username, password)
 	local s,d,h,c = social.get(full("account/verify_credentials"), nil, auth)
@@ -87,6 +85,7 @@ end
 function client:tweet(status)
 	if not self.authed then return false,"You must be logged in to tweet!" end
 	local s,d,h,c = social.post(full("statuses/update"), {status = status}, self.auth)
+	return check(s,d,h,c)
 end
 
 --- Shows a tweet.
@@ -816,4 +815,18 @@ function unfollow(user, username, password)
 	local s,m = cl:unfollow(user)
 	if not s then return false,m end
 	return true
+end
+
+--- A simple function to receive a user's home timeline.
+-- @param username Username to login as.
+-- @param password Password of the user.
+-- @return boolean Success or not
+-- @return unsigned If fail, the error message. If success, the timeline.
+-- @see client:homeTimeline
+function homeTimeline(username, password)
+	local cl = client:new()
+	local s,m = cl:login(username, password)
+	if not s then return false,m end
+	local s,m = cl:homeTimeline()
+	return s,m
 end
