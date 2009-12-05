@@ -662,6 +662,28 @@ function client:removeFavorite(id)
 	return check(s,d,h,c)
 end
 
+--- Enables notifications for a user.
+-- You must be logged in to do this.
+-- @param user User ID or username.
+-- @return boolean Success or not.
+-- @return unsigned If success, the user, if fail, the error message.
+function client:followDevice(user)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.post(full("notifications/follow/%s", user), nil, self.auth)
+	return check(s,d,h,c)
+end
+
+--- Disables notifications for a user.
+-- You must be logged in to do this.
+-- @param user User ID or username.
+-- @return boolean Success or not.
+-- @return unsigned If success, the user, if fail, the error message.
+function client:unfollowDevice(user)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.post(full("notifications/leave/%s", user), nil, self.auth)
+	return check(s,d,h,c)
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
