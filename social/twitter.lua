@@ -584,6 +584,15 @@ function client:showFriendship(target, source)
 	return check(s,d,h,c)
 end
 
+--- Receives a list of IDs that a user is following.
+-- @param user User ID or username. Defaults to currently authed user.
+-- @return boolean Success or not.
+-- @return unsigned If success, the messages, if fail, the error message.
+function client:following(user)
+	local s,d,h,c = social.get(full("friends/ids/%s", user or self.username), nil, self.auth)
+	return check(s,d,h,c)
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
