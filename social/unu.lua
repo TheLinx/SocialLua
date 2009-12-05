@@ -2,6 +2,7 @@ local social = require"social"
 --------------------------------
 local url = require"socket.url" -- luarocks install luasocket
 
+local string = string
 local assert,type = assert,type
 
 --- SocialLua - u.nu module.

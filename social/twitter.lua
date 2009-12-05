@@ -4,11 +4,13 @@ local mime = require"mime" -- luarocks install luasocket
 local url = require"socket.url" --             luasocket
 local json = require"json" --                  json4lua
 
+local string = string
+local setmetatable,tonumber,type,tonumber = setmetatable,tonumber,type,tonumber
+
 --- SocialLua - Twitter module.
--- Note: This module is in alpha and functions may change name without prior notice.
 -- @author Bart van Strien (bart.bes@gmail.com)
 -- @author Linus Sjögren (thelinxswe@gmail.com)
-module("social.twitter", package.seeall) -- seeall for now
+module("social.twitter")
 
 host = "twitter.com"
 
