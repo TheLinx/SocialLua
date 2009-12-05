@@ -740,7 +740,7 @@ end
 -- You must be logged in to do this.
 -- @param id ID of the saved search.
 -- @return boolean Success or not.
--- @return unsigned If success, the searches, if fail, the error message.
+-- @return unsigned If success, the search, if fail, the error message.
 function client:savedSearch(id)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.get(full("saved_searches/show/%s", id), nil, self.auth)
@@ -751,10 +751,21 @@ end
 -- You must be logged in to do this.
 -- @param query Search query to save.
 -- @return boolean Success or not.
--- @return unsigned If success, the user, if fail, the error message.
+-- @return unsigned If success, the search, if fail, the error message.
 function client:addSavedSearch(query)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.post(full("saved_searches/create"), {query = query}, self.auth)
+	return check(s,d,h,c)
+end
+
+--- Removes a saved search.
+-- You must be logged in to do this.
+-- @param id ID of the saved search.
+-- @return boolean Success or not.
+-- @return unsigned If success, the search, if fail, the error message.
+function client:deleteSavedSearch(id)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.post(full("saved_searches/destroy/%s", id), nil, self.auth)
 	return check(s,d,h,c)
 end
 
