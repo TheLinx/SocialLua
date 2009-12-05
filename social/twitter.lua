@@ -672,6 +672,17 @@ function client:block(user)
 	return check(s,d,h,c)
 end
 
+--- Unblocks a user.
+-- You must be logged in to do this.
+-- @param user User ID or username.
+-- @return boolean Success or not.
+-- @return unsigned If success, the user, if fail, the error message.
+function client:unblock(user)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.post(full("blocks/destroy/%s", user), nil, self.auth)
+	return check(s,d,h,c)
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
