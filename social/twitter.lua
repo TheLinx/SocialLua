@@ -640,6 +640,17 @@ function client:favorites(user, page)
 	return check(s,d,h,c)
 end
 
+--- Favorites a tweet.
+-- You must be logged in to do this.
+-- @param id Status ID.
+-- @return boolean Success or not.
+-- @return unsigned If success, the status, if fail, the error message.
+function client:addFavorite(id)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.post(full("favorites/create/%s", id), nil, self.auth)
+	return check(s,d,h,c)
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
