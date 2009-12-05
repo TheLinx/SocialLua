@@ -604,7 +604,7 @@ function client:followers(user, cursor)
 	return check(s,d,h,c)
 end
 
---- Changes profile fields on the user's profile.
+--- Changes fields on the user's profile.
 -- You must be logged in to do this.
 -- For information on what arguments you can use: http://apiwiki.twitter.com/Twitter-REST-API-Method:-account update_profile
 -- @param new New info.
@@ -613,6 +613,18 @@ end
 function client:updateProfile(new)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.post(full("account/update_profile"), new, self.auth)
+	return check(s,d,h,c)
+end
+
+--- Changes colors on the user's profile.
+-- You must be logged in to do this.
+-- For information on what arguments you can use: http://apiwiki.twitter.com/Twitter-REST-API-Method:-account update_profile_colors
+-- @param new New info.
+-- @return boolean Success or not.
+-- @return unsigned If success, the new profile, if fail, the error message.
+function client:updateProfileColors(new)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.post(full("account/update_profile_colors"), new, self.auth)
 	return check(s,d,h,c)
 end
 
