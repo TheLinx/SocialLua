@@ -593,6 +593,15 @@ function client:following(user)
 	return check(s,d,h,c)
 end
 
+--- Receives a list of IDs that is following the user.
+-- @param user User ID or username. Defaults to currently authed user.
+-- @return boolean Success or not.
+-- @return unsigned If success, the messages, if fail, the error message.
+function client:followers(user)
+	local s,d,h,c = social.get(full("followers/ids/%s", user or self.username), nil, self.auth)
+	return check(s,d,h,c)
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
