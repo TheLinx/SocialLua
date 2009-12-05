@@ -683,6 +683,17 @@ function client:unblock(user)
 	return check(s,d,h,c)
 end
 
+--- Checks if the authed user is blocking another user.
+-- You must be logged in to do this.
+-- @param user User ID or username.
+-- @return boolean Success or not.
+-- @return unsigned If success, the user, if fail, the error message.
+function client:isBlocking(user)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.get(full("blocks/exists/%s", user), nil, self.auth)
+	return check(s,d,h,c)
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
