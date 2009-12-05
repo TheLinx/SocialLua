@@ -586,19 +586,21 @@ end
 
 --- Receives a list of IDs that a user is following.
 -- @param user User ID or username. Defaults to currently authed user.
+-- @param cursor Used for pagination.
 -- @return boolean Success or not.
 -- @return unsigned If success, the messages, if fail, the error message.
-function client:following(user)
-	local s,d,h,c = social.get(full("friends/ids/%s", user or self.username), nil, self.auth)
+function client:following(user, cursor)
+	local s,d,h,c = social.get(full("friends/ids/%s", user or self.username), {cursor = cursor}, self.auth)
 	return check(s,d,h,c)
 end
 
 --- Receives a list of IDs that is following the user.
 -- @param user User ID or username. Defaults to currently authed user.
+-- @param cursor Used for pagination.
 -- @return boolean Success or not.
 -- @return unsigned If success, the messages, if fail, the error message.
-function client:followers(user)
-	local s,d,h,c = social.get(full("followers/ids/%s", user or self.username), nil, self.auth)
+function client:followers(user, cursor)
+	local s,d,h,c = social.get(full("followers/ids/%s", user or self.username), {cursor = cursor}, self.auth)
 	return check(s,d,h,c)
 end
 
