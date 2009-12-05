@@ -535,7 +535,7 @@ end
 -- You must be logged in to do this.
 -- @param user User ID or username.
 -- @return boolean Success or not.
--- @return unsigned If success, the messages, if fail, the error message.
+-- @return unsigned If success, the user, if fail, the error message.
 function client:follow(user)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.post(full("friendships/create/%s", user), nil, self.auth)
@@ -546,7 +546,7 @@ end
 -- You must be logged in to do this.
 -- @param user User ID or username.
 -- @return boolean Success or not.
--- @return unsigned If success, the messages, if fail, the error message.
+-- @return unsigned If success, the user, if fail, the error message.
 function client:unfollow(user)
 	if not self.authed then return false,"You must be logged in to do this!" end
 	local s,d,h,c = social.post(full("friendships/destroy/%s", user), nil, self.auth)
@@ -557,7 +557,7 @@ end
 -- @param usera Is this user...
 -- @param userb ...following this user?
 -- @return boolean Success or not.
--- @return unsigned If success, the messages, if fail, the error message.
+-- @return unsigned If success, a boolean, if fail, the error message.
 function client:isFollowing(usera, userb)
 	local s,d,h,c = social.get(full("friendships/exists"), {user_a = usera, user_b = userb}, self.auth)
 	return check(s,d,h,c)
@@ -567,7 +567,7 @@ end
 -- @param target User ID or username.
 -- @param source User ID or username. Defaults to authed user.
 -- @return boolean Success or not.
--- @return unsigned If success, the messages, if fail, the error message.
+-- @return unsigned If success, the info, if fail, the error message.
 function client:showFriendship(target, source)
 	local arg = {}
 	if tonumber(target) then
@@ -588,7 +588,7 @@ end
 -- @param user User ID or username. Defaults to currently authed user.
 -- @param cursor Used for pagination.
 -- @return boolean Success or not.
--- @return unsigned If success, the messages, if fail, the error message.
+-- @return unsigned If success, the ids, if fail, the error message.
 function client:following(user, cursor)
 	local s,d,h,c = social.get(full("friends/ids/%s", user or self.username), {cursor = cursor}, self.auth)
 	return check(s,d,h,c)
@@ -598,9 +598,21 @@ end
 -- @param user User ID or username. Defaults to currently authed user.
 -- @param cursor Used for pagination.
 -- @return boolean Success or not.
--- @return unsigned If success, the messages, if fail, the error message.
+-- @return unsigned If success, the ids, if fail, the error message.
 function client:followers(user, cursor)
 	local s,d,h,c = social.get(full("followers/ids/%s", user or self.username), {cursor = cursor}, self.auth)
+	return check(s,d,h,c)
+end
+
+--- Changes profile fields on the user's profile.
+-- You must be logged in to do this.
+-- For information on what arguments you can use: http://apiwiki.twitter.com/Twitter-REST-API-Method:-account update_profile
+-- @param new New info.
+-- @return boolean Success or not.
+-- @return unsigned If success, the new profile, if fail, the error message.
+function client:updateProfile(new)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.post(full("account/update_profile"), new, self.auth)
 	return check(s,d,h,c)
 end
 
