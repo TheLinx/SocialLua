@@ -747,6 +747,17 @@ function client:savedSearch(id)
 	return check(s,d,h,c)
 end
 
+--- Saves a search.
+-- You must be logged in to do this.
+-- @param query Search query to save.
+-- @return boolean Success or not.
+-- @return unsigned If success, the user, if fail, the error message.
+function client:addSavedSearch(query)
+	if not self.authed then return false,"You must be logged in to do this!" end
+	local s,d,h,c = social.post(full("saved_searches/create"), {query = query}, self.auth)
+	return check(s,d,h,c)
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
