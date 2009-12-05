@@ -563,6 +563,27 @@ function client:isFollowing(usera, userb)
 	return check(s,d,h,c)
 end
 
+--- Receives information about a friendship.
+-- @param target User ID or username.
+-- @param source User ID or username. Defaults to authed user.
+-- @return boolean Success or not.
+-- @return unsigned If success, the messages, if fail, the error message.
+function client:showFriendship(target, source)
+	local arg = {}
+	if tonumber(target) then
+		arg.target_id = target
+	else
+		arg.target_screen_name = target
+	end
+	if tostring(source) then
+		arg.source_id = source
+	elseif source then
+		arg.source_screen_name = source
+	end
+	local s,d,h,c = social.get(full("friendships/show"), arg, self.auth)
+	return check(s,d,h,c)
+end
+
 --[[------------ simple functions --------------]]--
 
 --- A simple function to tweet.
