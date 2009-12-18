@@ -4,7 +4,7 @@ local url = require"socket.url" --                    luasocket
 local ltn12 = require"ltn12" --                       luasocket
 
 local table,string = table,string
-local pairs = pairs
+local pairs,print = pairs,print
 
 --- SocialLua
 -- @author Bart van Strien (bart.bes@gmail.com)
@@ -40,6 +40,7 @@ end
 --- Makes a request.
 -- This is a back-end function.
 function request(method, url, auth, data)
+	print(method, url, auth, data)
 	local out = {}
     local r,c,h = http.request{
 		url = url,
