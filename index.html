@@ -1,1 +1,38 @@
-blah
+---
+layout: default
+title: SocialLua
+---
+
+<p>SocialLua is a set of modules designed to make it easy for you to use the APIs of internet sites and services with ease.<br />
+It is managed by <a href="http://www.github.com/thelinx">Linus Sjögren</a> and <a href="http://www.github.com/bartbes">Bart van Strien</a>.<br />
+The code is licensed under the Public Domain.</p>
+<h2 id="inclusion">Including SocialLua in your Script</h2>
+<p>Using SocialLua is just a matter of requiring the modules you need.</p>
+{% highlight lua linenos %}
+require("social.twitter")
+social.twitter.tweet("Hello World from SocialLua!", "username", "password")
+{% endhighlight %}
+<p>Since SocialLua is Public Domain code, you may use it however you like, with no restrictions.<br />
+This means that you don&#8217;t need to worry about licensing issues.</p>
+<h2 id="rvalues">Return values</h2>
+<p>All SocialLua modules follows the standard (success, data or error message) as return values.</p>
+{% highlight lua linenos %}
+success, data = social.twitter.homeTimeline("username", "password")
+if success then
+    -- do stuff with the data
+else
+    print("Error, "..data)
+end
+{% endhighlight %}
+<h2 id="contributing">Contributing to the project</h2>
+<p>Contributing is as easy as <a href="http://github.com/TheLinx/SocialLua/fork">forking the SocialLua repo</a> and adding your own stuff.<br />
+There are some guidelines, though:</p>
+<ul>
+	<li>Comment your code with <a href="http://luadoc.luaforge.net/">LuaDoc</a>-compatible documentation.</li>
+	<li>Use return values as <a href="#rvalues">the rest of the project does</a>.</li>
+</ul>
+<h2 id="docs">Module documentation</h2>
+<p>The documentation is not available outside of the source code for now.<br />
+You can look in the source code of the module that you want to use to see how to use it&#8217;s functions.</p>
+<p>We are planning on making the GitHub page include auto-generated documentation.<br />
+Meanwhile, the source code is your friend.</p>
