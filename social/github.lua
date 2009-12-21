@@ -5,12 +5,22 @@ local url = require"socket.url" --             luasocket
 local json = require"json" --                  json4lua
 
 --- SocialLua - GitHub module.
--- This module does not work at all as of yet.
+-- This module is alpha quality, and behaviour may change without prior notice.
 -- @author Linus Sjögren (thelinx@unreliablepollution.net)
 module("social.github", package.seeall) -- seeall for now
 
 function full(page, ...)
     return "https://github.com/api/v2/json/"..string.format(page, ...)
+end
+
+local function check(s,d,h,c)
+    if not s then return false,d end
+    local t = json.decode(d)
+    if c ~= 200 then
+        return false,t.error[1].error
+    else
+        return true,t
+    end
 end
 
 client = {}
@@ -56,10 +66,19 @@ function client:login(username, token)
         self.auth = auth
         self.username = username
         self.token = token
-        self.user = t
-        return true,t
+        self.user = t.user
+        return true,t.user
     else
         self:logout()
         return false,"failed to authorize"
     end
+end
+
+--- Searches for a GitHub user.
+-- @param query Search query.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the results.
+function client:userSearch(query)
+    local s,d,h,c = social.get(full("user/search/%s", query))
+    return check(s,d,h,c)
 end
