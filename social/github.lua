@@ -137,3 +137,13 @@ function client:userFollow(username)
     local s,d,h,c = social.post(full("user/follow/%s", username), assert(self.auth, "You must be logged in to do this!"))
     return check(s,d,h,c)
 end
+
+--- Unfollows the specified user.
+-- You must be logged in to do this.
+-- @param username User to unfollow.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the new following list.
+function client:userUnfollow(username)
+    local s,d,h,c = social.post(full("user/unfollow/%s", username), assert(self.auth, "You must be logged in to do this!"))
+    return check(s,d,h,c)
+end
