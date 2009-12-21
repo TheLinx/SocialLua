@@ -210,3 +210,15 @@ function client:userEmailAdd(email)
     local s,d,h,c = social.post(full("user/email/add"), arg)
     return check(s,d,h,c)
 end
+
+--- Removes an email address from the user.
+-- You must be logged in to do this.
+-- @param email Email address
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the new list of addresses.
+function client:userEmailRemove(email)
+    local arg = assert(self.auth, "You must be logged in to do this!")
+    arg.email = email
+    local s,d,h,c = social.post(full("user/email/remove"), arg)
+    return check(s,d,h,c)
+end
