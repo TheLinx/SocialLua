@@ -234,3 +234,14 @@ function client:issuesSearch(user, repo, state, query)
     local s,d,h,c = social.get(full("issues/search/%s/%s/%s/%s", user, repo, state, query))
     return check(s,d,h,c)
 end
+
+--- Returns a list of issues in a repository.
+-- @param user Owner of the repo.
+-- @param repo Repository name.
+-- @param state Issue states.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the issues.
+function client:issuesList(user, repo, state)
+    local s,d,h,c = social.get(full("issues/list/%s/%s/%s", user, repo, state))
+    return check(s,d,h,c)
+end
