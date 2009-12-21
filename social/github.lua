@@ -258,6 +258,7 @@ function client:issuesShow(user, repo, id)
 end
 
 --- Opens an issue on a repository.
+-- You must be logged in to do this.
 -- @param user Owner of the repo.
 -- @param repo Repository name.
 -- @param title Issue title.
@@ -269,5 +270,17 @@ function client:issuesOpen(user, repo, title, body)
     arg.title = title
     arg.body = body
     local s,d,h,c = social.post(full("issues/open/%s/%s", user, repo), arg)
+    return check(s,d,h,c)
+end
+
+--- Closes an issue on a repository.
+-- You must be logged in to do this.
+-- @param user Owner of the repo.
+-- @param repo Repository name.
+-- @param id Issue ID.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the issue.
+function client:issuesClose(user, repo, id)
+    local s,d,h,c = social.post(full("issues/close/%s/%s/%d", user, repo, id), assert(self.auth, "You must be logged in to do this!"))
     return check(s,d,h,c)
 end
