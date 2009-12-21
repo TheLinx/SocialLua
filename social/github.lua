@@ -256,3 +256,18 @@ function client:issuesShow(user, repo, id)
     local s,d,h,c = social.get(full("issues/show/%s/%s/%s", user, repo, id))
     return check(s,d,h,c)
 end
+
+--- Opens an issue on a repository.
+-- @param user Owner of the repo.
+-- @param repo Repository name.
+-- @param title Issue title.
+-- @param body Descriptive text.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the issue.
+function client:issuesOpen(user, repo, title, body)
+    local arg = assert(self.auth, "You must be logged in to do this!")
+    arg.title = title
+    arg.body = body
+    local s,d,h,c = social.post(full("issues/open/%s/%s", user, repo), arg)
+    return check(s,d,h,c)
+end
