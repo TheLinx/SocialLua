@@ -296,3 +296,20 @@ function client:issuesReopen(user, repo, id)
     local s,d,h,c = social.post(full("issues/reopen/%s/%s/%d", user, repo, id), assert(self.auth, "You must be logged in to do this!"))
     return check(s,d,h,c)
 end
+
+--- Edits an issue on a repository.
+-- You must be logged in to do this.
+-- @param user Owner of the repo.
+-- @param repo Repository name.
+-- @param id Issue ID.
+-- @param new New info. See http://develop.github.com/p/issues.html#edit_existing_issues for details.
+-- @param boolean Success or not.
+-- @param unsigned If fail, the error message. If success, the issue.
+function client:issuesEdit(user, repo, id, new)
+    local arg = assert(self.auth, "You must be logged in to do this!")
+    for k,v in pairs(new) do
+        arg[k] = v
+    end
+    local s,d,h,c = social.post(full("issues/edit/%s/%s/%s", user, repo, id), arg)
+    return check(s,d,h,c)
+end
