@@ -222,3 +222,15 @@ function client:userEmailRemove(email)
     local s,d,h,c = social.post(full("user/email/remove"), arg)
     return check(s,d,h,c)
 end
+
+--- Searches for issues in a repository.
+-- @param user Owner of the repo.
+-- @param repo Repository name.
+-- @param state Issue states.
+-- @param query Search query.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the issues.
+function client:issuesSearch(user, repo, state, query)
+    local s,d,h,c = social.get(full("issues/search/%s/%s/%s/%s", user, repo, state, query))
+    return check(s,d,h,c)
+end
