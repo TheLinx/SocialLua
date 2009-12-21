@@ -189,3 +189,12 @@ function client:userKeyRemove(id)
     local s,d,h,c = social.post(full("user/key/remove"), arg)
     return check(s,d,h,c)
 end
+
+--- Returns a list of the user's email addresses.
+-- You must be logged in to do this.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the keys.
+function client:userEmails()
+    local s,d,h,c = social.get(full("user/emails"), assert(self.auth, "You must be logged in to do this!"))
+    return check(s,d,h,c)
+end
