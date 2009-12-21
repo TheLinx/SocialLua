@@ -284,3 +284,15 @@ function client:issuesClose(user, repo, id)
     local s,d,h,c = social.post(full("issues/close/%s/%s/%d", user, repo, id), assert(self.auth, "You must be logged in to do this!"))
     return check(s,d,h,c)
 end
+
+--- Reopens an issue on a repository.
+-- You must be logged in to do this.
+-- @param user Owner of the repo.
+-- @param repo Repository name.
+-- @param id Issue ID.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the issue.
+function client:issuesReopen(user, repo, id)
+    local s,d,h,c = social.post(full("issues/reopen/%s/%s/%d", user, repo, id), assert(self.auth, "You must be logged in to do this!"))
+    return check(s,d,h,c)
+end
