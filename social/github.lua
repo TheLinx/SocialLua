@@ -108,3 +108,12 @@ function client:userEdit(values)
     end
     return check(s,d,h,c)
 end
+
+--- Returns a list of users the specified user is following.
+-- @param username Target user.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the users.
+function client:userFollowing(username)
+    local s,d,h,c = social.get(full("user/show/%s/following", username))
+    return check(s,d,h,c)
+end
