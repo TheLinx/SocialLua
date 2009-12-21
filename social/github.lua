@@ -88,6 +88,23 @@ end
 -- @return boolean Success or not.
 -- @return unsigned If fail, the error message. If success, the user.
 function client:userShow(username)
-    local s,d,h,c = social.get(full("user/show/%s", username))
+    local s,d,h,c = social.get(full("user/show/%s", username), self.auth)
+    return check(s,d,h,c)
+end
+
+--- Edits a user's information.
+-- Username is set to the currently authed user, no matter what.
+-- @param values See http://develop.github.com/p/users.html#authenticated_user_management
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the new user info.
+function client:userEdit(values)
+    local arg = assert(self.auth, "You must be logged in to do this!")
+    for k,v in pairs(values) do
+        arg["values["..k.."]"] = v
+    end
+    local s,d,h,c = social.post(full("user/show/%s", self.username), arg)
+    if s then
+        self.user = d.user
+    end
     return check(s,d,h,c)
 end
