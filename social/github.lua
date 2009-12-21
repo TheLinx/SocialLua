@@ -165,3 +165,15 @@ function client:userKeys()
     local s,d,h,c = social.get(full("user/keys"), assert(self.auth, "You must be logged in to do this!"))
     return check(s,d,h,c)
 end
+
+--- Assigns a ssh key to the user.
+-- You must be logged in to do this.
+-- @param key Key data.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the new list of keys.
+function client:userKeyAdd(key)
+    local arg = assert(self.auth, "You must be logged in to do this!")
+    arg.key = key
+    local s,d,h,c = social.post(full("user/key/add"), arg)
+    return check(s,d,h,c)
+end
