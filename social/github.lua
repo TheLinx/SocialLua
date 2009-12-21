@@ -313,3 +313,14 @@ function client:issuesEdit(user, repo, id, new)
     local s,d,h,c = social.post(full("issues/edit/%s/%s/%s", user, repo, id), arg)
     return check(s,d,h,c)
 end
+
+--- Lists issue labels in a repository.
+-- You must be logged in to do this.
+-- @param user Owner of the repo.
+-- @param repo Repository name.
+-- @param boolean Success or not.
+-- @param unsigned If fail, the error message. If success, the labels.
+function client:issuesLabels(user, repo)
+    local s,d,h,c = social.get(full("issues/labels/%s/%s", user, repo), assert(self.auth, "You must be logged in to do this!"))
+    return check(s,d,h,c)
+end
