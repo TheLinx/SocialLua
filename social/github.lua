@@ -117,3 +117,12 @@ function client:userFollowing(username)
     local s,d,h,c = social.get(full("user/show/%s/following", username or self.username))
     return check(s,d,h,c)
 end
+
+--- Returns a list of users following the specified user.
+-- @param username Target user. Defaults to currently authed user.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the users.
+function client:userFollowers(username)
+    local s,d,h,c = social.get(full("user/show/%s/followers", username or self.username))
+    return check(s,d,h,c)
+end
