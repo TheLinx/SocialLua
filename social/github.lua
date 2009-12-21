@@ -193,8 +193,20 @@ end
 --- Returns a list of the user's email addresses.
 -- You must be logged in to do this.
 -- @return boolean Success or not.
--- @return unsigned If fail, the error message. If success, the keys.
+-- @return unsigned If fail, the error message. If success, the addresses.
 function client:userEmails()
     local s,d,h,c = social.get(full("user/emails"), assert(self.auth, "You must be logged in to do this!"))
+    return check(s,d,h,c)
+end
+
+--- Assigns an email address to the user.
+-- You must be logged in to do this.
+-- @param email Email address
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the new list of addresses.
+function client:userEmailAdd(email)
+    local arg = assert(self.auth, "You must be logged in to do this!")
+    arg.email = email
+    local s,d,h,c = social.post(full("user/email/add"), arg)
     return check(s,d,h,c)
 end
