@@ -82,3 +82,12 @@ function client:userSearch(query)
     local s,d,h,c = social.get(full("user/search/%s", query))
     return check(s,d,h,c)
 end
+
+--- Shows information about a user.
+-- @param username Target user.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the user.
+function client:userShow(username)
+    local s,d,h,c = social.get(full("user/show/%s", username))
+    return check(s,d,h,c)
+end
