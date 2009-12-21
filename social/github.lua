@@ -177,3 +177,15 @@ function client:userKeyAdd(key)
     local s,d,h,c = social.post(full("user/key/add"), arg)
     return check(s,d,h,c)
 end
+
+--- Removes a ssh key from the user.
+-- You must be logged in to do this.
+-- @param id Key ID.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the new list of keys.
+function client:userKeyRemove(id)
+    local arg = assert(self.auth, "You must be logged in to do this!")
+    arg.id = id
+    local s,d,h,c = social.post(full("user/key/remove"), arg)
+    return check(s,d,h,c)
+end
