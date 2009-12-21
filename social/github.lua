@@ -147,3 +147,12 @@ function client:userUnfollow(username)
     local s,d,h,c = social.post(full("user/unfollow/%s", username), assert(self.auth, "You must be logged in to do this!"))
     return check(s,d,h,c)
 end
+
+--- Returns a list of repos a user is following.
+-- @param username Target user. Defaults to currently authed user.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the repos.
+function client:reposWatched(username)
+    local s,d,h,c = social.get(full("repos/watched/%s", username or self.username))
+    return check(s,d,h,c)
+end
