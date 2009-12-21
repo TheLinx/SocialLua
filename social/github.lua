@@ -156,3 +156,12 @@ function client:reposWatched(username)
     local s,d,h,c = social.get(full("repos/watched/%s", username or self.username))
     return check(s,d,h,c)
 end
+
+--- Returns a list of the user's ssh keys.
+-- You must be logged in to do this.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the keys.
+function client:userKeys()
+    local s,d,h,c = social.get(full("user/keys"), assert(self.auth, "You must be logged in to do this!"))
+    return check(s,d,h,c)
+end
