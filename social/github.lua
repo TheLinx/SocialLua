@@ -93,6 +93,7 @@ function client:userShow(username)
 end
 
 --- Edits a user's information.
+-- You must be logged in to do this.
 -- Username is set to the currently authed user, no matter what.
 -- @param values See http://develop.github.com/p/users.html#authenticated_user_management
 -- @return boolean Success or not.
@@ -124,5 +125,15 @@ end
 -- @return unsigned If fail, the error message. If success, the users.
 function client:userFollowers(username)
     local s,d,h,c = social.get(full("user/show/%s/followers", username or self.username))
+    return check(s,d,h,c)
+end
+
+--- Follows the specified user.
+-- You must be logged in to do this.
+-- @param username User to follow.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the new following list.
+function client:userFollow(username)
+    local s,d,h,c = social.post(full("user/follow/%s", username), assert(self.auth, "You must be logged in to do this!"))
     return check(s,d,h,c)
 end
