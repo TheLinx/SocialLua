@@ -303,8 +303,8 @@ end
 -- @param repo Repository name.
 -- @param id Issue ID.
 -- @param new New info. See http://develop.github.com/p/issues.html#edit_existing_issues for details.
--- @param boolean Success or not.
--- @param unsigned If fail, the error message. If success, the issue.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the issue.
 function client:issuesEdit(user, repo, id, new)
     local arg = assert(self.auth, "You must be logged in to do this!")
     for k,v in pairs(new) do
@@ -318,8 +318,8 @@ end
 -- You must be logged in to do this.
 -- @param user Owner of the repo.
 -- @param repo Repository name.
--- @param boolean Success or not.
--- @param unsigned If fail, the error message. If success, the labels.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the labels.
 function client:issuesLabels(user, repo)
     local s,d,h,c = social.get(full("issues/labels/%s/%s", user, repo), assert(self.auth, "You must be logged in to do this!"))
     return check(s,d,h,c)
@@ -331,8 +331,8 @@ end
 -- @param repo Repository name.
 -- @param label Label name.
 -- @param id Issue ID.
--- @param boolean Success or not.
--- @param unsigned If fail, the error message. If success, the new list of labels for target issue.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the new list of labels for target issue.
 function client:issuesLabelAdd(user, repo, label, id)
     local s,d,h,c = social.post(full("issues/label/add/%s/%s/%s/%s", user, repo, label, id), assert(self.auth, "You must be logged in to do this!"))
     return check(s,d,h,c)
@@ -344,8 +344,8 @@ end
 -- @param repo Repository name.
 -- @param label Label name.
 -- @param id Issue ID.
--- @param boolean Success or not.
--- @param unsigned If fail, the error message. If success, the new list of labels for target issue.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the new list of labels for target issue.
 function client:issuesLabelRemove(user, repo, label, id)
     local s,d,h,c = social.post(full("issues/label/remove/%s/%s/%s/%s", user, repo, label, id), assert(self.auth, "You must be logged in to do this!"))
     return check(s,d,h,c)
@@ -357,8 +357,8 @@ end
 -- @param repo Repository name.
 -- @param id Issue ID.
 -- @param comment Comment text.
--- @param boolean Success or not.
--- @param unsigned If fail, the error message. If success, the comment.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the comment.
 function client:issuesComment(user, repo, id, comment)
     local arg = assert(self.auth, "You must be logged in to do this!")
     arg.comment = comment
@@ -369,8 +369,8 @@ end
 --- Returns information about a repository's network.
 -- @param user Owner of the repo.
 -- @param repo Repository name.
--- @param boolean Success or not.
--- @param unsigned If fail, the error message. If success, the info.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the info.
 function client:networkMeta(user, repo)
     local s,d,h,c = social.get("http://github.com/"..user.."/"..repo.."/network_meta", self.auth)
     return check(s,d,h,c)
@@ -382,13 +382,22 @@ end
 -- @param nethash See http://develop.github.com/p/network.html#network_data
 -- @param s See http://develop.github.com/p/network.html#network_data
 -- @param e See http://develop.github.com/p/network.html#network_data
--- @param boolean Success or not.
--- @param unsigned If fail, the error message. If success, the info.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the info.
 function client:networkDataChunk(user, repo, nethash, s, e)
     local arg = self.auth or {}
     arg.nethash = nethash
     arg.start = s
     arg["end"] = e
     local s,d,h,c = social.get("http://github.com/"..user.."/"..repo.."/network_data_chunk", arg)
+    return check(s,d,h,c)
+end
+
+--- Searches for repositories.
+-- @param query Search query.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the results.
+function client:reposSearch(query)
+    local s,d,h,c = social.get(full("repos/search/%s", query))
     return check(s,d,h,c)
 end
