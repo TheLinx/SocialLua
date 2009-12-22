@@ -375,3 +375,20 @@ function client:networkMeta(user, repo)
     local s,d,h,c = social.get("http://github.com/"..user.."/"..repo.."/network_meta", self.auth)
     return check(s,d,h,c)
 end
+
+--- Returns information about a repository.
+-- @param user Owner of the repo.
+-- @param repo Repository name.
+-- @param nethash See http://develop.github.com/p/network.html#network_data
+-- @param s See http://develop.github.com/p/network.html#network_data
+-- @param e See http://develop.github.com/p/network.html#network_data
+-- @param boolean Success or not.
+-- @param unsigned If fail, the error message. If success, the info.
+function client:networkDataChunk(user, repo, nethash, s, e)
+    local arg = self.auth or {}
+    arg.nethash = nethash
+    arg.start = s
+    arg["end"] = e
+    local s,d,h,c = social.get("http://github.com/"..user.."/"..repo.."/network_data_chunk", arg)
+    return check(s,d,h,c)
+end
