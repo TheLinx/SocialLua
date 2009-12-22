@@ -365,3 +365,13 @@ function client:issuesComment(user, repo, id, comment)
     local s,d,h,c = social.post(full("issues/comment/%s/%s/%s", user, repo, id), arg)
     return check(s,d,h,c)
 end
+
+--- Returns information about a repository's network.
+-- @param user Owner of the repo.
+-- @param repo Repository name.
+-- @param boolean Success or not.
+-- @param unsigned If fail, the error message. If success, the info.
+function client:networkMeta(user, repo)
+    local s,d,h,c = social.get("http://github.com/"..user.."/"..repo.."/network_meta", self.auth)
+    return check(s,d,h,c)
+end
