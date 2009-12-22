@@ -431,3 +431,13 @@ function client:reposUnwatch(user, repo)
     local s,d,h,c = social.get(full("repos/unwatch/%s/%s", user, repo), assert(self.auth, "You must be logged in to do this!"))
     return check(s,d,h,c)
 end
+
+--- Forks a repository.
+-- @param user Owner of the repo.
+-- @param repo Repository name.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the new repository info.
+function client:reposFork(user, repo)
+    local s,d,h,c = social.get(full("repos/fork/%s/%s", user, repo), assert(self.auth, "You must be logged in to do this!"))
+    return check(s,d,h,c)
+end
