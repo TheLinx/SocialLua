@@ -412,3 +412,13 @@ function client:reposShow(user, repo)
     return check(s,d,h,c)
 end
 
+--- Follows a repository for updates.
+-- @param user Owner of the repo.
+-- @param repo Repository name.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the repository info.
+function client:reposWatch(user, repo)
+    local s,d,h,c = social.get(full("repos/watch/%s/%s", user, repo), assert(self.auth, "You must be logged in to do this!"))
+    return check(s,d,h,c)
+end
+    
