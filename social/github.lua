@@ -337,3 +337,17 @@ function client:issuesLabelAdd(user, repo, label, id)
     local s,d,h,c = social.post(full("issues/label/add/%s/%s/%s/%s", user, repo, label, id), assert(self.auth, "You must be logged in to do this!"))
     return check(s,d,h,c)
 end
+
+--- Unlabels an issue.
+-- You must be logged in to do this.
+-- @param user Owner of the repo.
+-- @param repo Repository name.
+-- @param label Label name.
+-- @param id Issue ID.
+-- @param boolean Success or not.
+-- @param unsigned If fail, the error message. If success, the new list of labels for target issue.
+function client:issuesLabelRemove(user, repo, label, id)
+    local s,d,h,c = social.post(full("issues/label/remove/%s/%s/%s/%s", user, repo, label, id), assert(self.auth, "You must be logged in to do this!"))
+    return check(s,d,h,c)
+end
+
