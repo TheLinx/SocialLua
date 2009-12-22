@@ -351,3 +351,17 @@ function client:issuesLabelRemove(user, repo, label, id)
     return check(s,d,h,c)
 end
 
+--- Comments an issue.
+-- You must be logged in to do this.
+-- @param user Owner of the repo.
+-- @param repo Repository name.
+-- @param id Issue ID.
+-- @param comment Comment text.
+-- @param boolean Success or not.
+-- @param unsigned If fail, the error message. If success, the comment.
+function client:issuesComment(user, repo, id, comment)
+    local arg = assert(self.auth, "You must be logged in to do this!")
+    arg.comment = comment
+    local s,d,h,c = social.post(full("issues/comment/%s/%s/%s", user, repo, id), arg)
+    return check(s,d,h,c)
+end
