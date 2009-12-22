@@ -441,3 +441,22 @@ function client:reposFork(user, repo)
     local s,d,h,c = social.get(full("repos/fork/%s/%s", user, repo), assert(self.auth, "You must be logged in to do this!"))
     return check(s,d,h,c)
 end
+
+--- Creates a repository.
+-- @param name Name of the new repo.
+-- @param desc (optional) Description.
+-- @param url (optional) Homepage URL.
+-- @param pub (optional) Whether the repo is public or not. Defaults to public.
+function client:reposCreate(name, desc, url, pub)
+    local arg = assert(self.auth, "You must be logged in to do this!")
+    arg.name = name
+    arg.description = description
+    arg.homepage = url
+    if pub == false then
+        arg.public = 0
+    else
+        arg.public = (pub and tonumber(pub))
+    end
+    local s,d,h,c = social.get(full("repos/create"), arg)
+    return check(s,d,h,c)
+end
