@@ -408,7 +408,7 @@ end
 -- @return boolean Success or not.
 -- @return unsigned If fail, the error message. If success, the info.
 function client:reposShow(user, repo)
-    local s,d,h,c = social.get(full("repos/show/%s/%s", user, repo))
+    local s,d,h,c = social.get(full("repos/show/%s/%s", user, repo), self.auth)
     return check(s,d,h,c)
 end
 
