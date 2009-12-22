@@ -447,6 +447,8 @@ end
 -- @param desc (optional) Description.
 -- @param url (optional) Homepage URL.
 -- @param pub (optional) Whether the repo is public or not. Defaults to public.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the new repository info.
 function client:reposCreate(name, desc, url, pub)
     local arg = assert(self.auth, "You must be logged in to do this!")
     arg.name = name
@@ -458,5 +460,17 @@ function client:reposCreate(name, desc, url, pub)
         arg.public = (pub and tonumber(pub))
     end
     local s,d,h,c = social.get(full("repos/create"), arg)
+    return check(s,d,h,c)
+end
+
+--- Deletes a repository.
+-- @param name Name of the repo.
+-- @param token Confirmation token.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the deletion info.
+function client:reposDelete(name, token)
+    local arg = assert(self.auth, "You must be logged in to do this!")
+    arg.delete_token = token
+    local s,d,h,c = social.get(full("repos/delete/%s", name), arg)
     return check(s,d,h,c)
 end
