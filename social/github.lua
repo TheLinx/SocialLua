@@ -376,7 +376,7 @@ function client:networkMeta(user, repo)
     return check(s,d,h,c)
 end
 
---- Returns information about a repository.
+--- Returns network information about a repository.
 -- @param user Owner of the repo.
 -- @param repo Repository name.
 -- @param nethash See http://develop.github.com/p/network.html#network_data
@@ -401,3 +401,14 @@ function client:reposSearch(query)
     local s,d,h,c = social.get(full("repos/search/%s", query))
     return check(s,d,h,c)
 end
+
+--- Returns information about a repository.
+-- @param user Owner of the repo.
+-- @param repo Repository name.
+-- @return boolean Success or not.
+-- @return unsigned If fail, the error message. If success, the info.
+function client:reposShow(user, repo)
+    local s,d,h,c = social.get(full("repos/show/%s/%s", user, repo))
+    return check(s,d,h,c)
+end
+
