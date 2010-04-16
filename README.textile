@@ -20,13 +20,13 @@ Since SocialLua is Public Domain code, you may use it however you like, with no 
 
 h2(#rvalues). Return values
 
-All SocialLua modules follows the standard (success, data or error message) as return values.
+All SocialLua modules follows the standard (data or nil, error message) as return values.
 
-bc. success, data = social.twitter.homeTimeline("username", "password")
-if success then
+bc. data, err = social.twitter.homeTimeline("username", "password")
+if data then
     -- do stuff with the data
 else
-    print("Error, "..data)
+    print("Error, "..err)
 end
 
 h2(#contributing). Contributing to the project
