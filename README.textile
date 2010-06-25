@@ -16,6 +16,7 @@ Using SocialLua is just a matter of requiring the modules you need.
 bc. require("social.twitter")
 social.twitter.tweet("Hello World from SocialLua!", "username", "password")
 
+The above example wont work atm, though. :(
 Since SocialLua is Public Domain code, you may use it however you like, with no restrictions. This means that you don't need to worry about licensing issues.
 
 h2(#rvalues). Return values
