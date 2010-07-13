@@ -13,39 +13,7 @@ module("social.twitter", package.seeall)
 -- TODO: Search API functions.
 -- TODO: OAuth
 
-host = "api.twitter.com"
-
-local function full(p, ...)
-    return (string.format("http://%s/1/%s.json", host, string.format(p, ...)))
-end
-
-local function check(s,d,h,c)
-    if not s then return false,d end
-    local t = json.decode(d)
-    if c ~= 200 then
-        return nil,t.error
-    else
-        return t
-    end
-end
-
-client = {}
-local cl_mt = { __index = client }
-
---- Creates a new Twitter client.
-function client:new()
-    return setmetatable({authed = false}, cl_mt)
-end
-
-function cl_mt:__tostring()
-    if self.authed then
-        return "Twitter client, authed as "..self.username.." ("..self.auth..")"
-    else
-        return "Twitter client, not authed"
-    end
-end
-
-for name,info in pairs{
+resources = {
 -- Timeline resources
 	publicTimeline = {"get", "statuses/public_timeline"},
 	homeTimeline = {"get", "statuses/home_timeline"},
@@ -90,7 +58,7 @@ for name,info in pairs{
 	getListMembers = {"get", ":user/:list_id/members"},
 	addListMember = {"post", ":user/:list_id/members"},
 	delListMember = {"delete", ":user/:list_id/members"},
-	chkListMember = {"get", ":user/:list_id/members/:id"}
+	chkListMember = {"get", ":user/:list_id/members/:id"},
 -- List Subscribers resources
 	getListSubscribers = {"get", ":user/:list_id/subscribers"},
 	addListSubscriber = {"post", ":user/:list_id/subscribers"},
@@ -145,7 +113,43 @@ for name,info in pairs{
 -- Geo resources
 	reverseGeocode = {"get", "geo/reverse_geocode"},
 	placeInfo = {"get", "geo/id/:place_id"}
-} do
+}
+
+host = "api.twitter.com"
+
+local function full(p, ...)
+    return (string.format("http://%s/1/%s.json", host, string.format(p, ...)))
+end
+
+local function check(s,d,h,c)
+    if not s then return false,d end
+    local t = json.decode(d)
+    if c ~= 200 then
+        return nil,t.error
+    else
+        return t
+    end
+end
+
+client = {}
+local cl_mt = { __index = client }
+
+--- Creates a new Twitter client.
+-- @param key (Optional) OAuth Consumer Key
+-- @param secret (Optional) OAuth Consomer Secret
+function client:new(key, secret)
+    return setmetatable({authed = false, ckey = key, csecret = secret}, cl_mt)
+end
+
+function cl_mt:__tostring()
+    if self.authed then
+        return "Twitter client, authed as "..self.username.." ("..self.auth..")"
+    else
+        return "Twitter client, not authed"
+    end
+end
+
+for name,info in pairs(resources) do
 	local info = info
 	client[name] = function(self, arg)
 		local url = info[2]:gsub(":([%w_-]+)", arg)
@@ -153,27 +157,16 @@ for name,info in pairs{
 	end
 end
 
--- this needs to be replaced with OAuth
-function client:login(username, password)
-    local auth = social.authbasic(username, password)
-    local s,d,h,c = social.get(full("account/verify_credentials"), nil, auth)
-    if not s then return false,d end
-    local t = json.decode(d)
-    if c ~= 200 then
-        self:logout()
-        return false,t.error
-    else
-        self.authed = true
-        self.auth = auth
-        self.username = username
-        self.user = t
-        return true,t
-    end
+function client:requestToken()
+	local auth = social.authoauth{
+		url = "https://api.twitter.com/oauth/request_token",
+		method = "post",
+		consumerKey = self.ckey,
+		consumerSecret = self.csecret
+	}
+	return social.post("https://api.twitter.com/oauth/request_token", {}, auth)
 end
 
-function client:logout()
-    self.authed = false
-    self.auth = nil
-    self.username = nil
-    self.user = nil
+function client:flushAuth()
+	self.auth = nil
 end
