@@ -1,3 +1,7 @@
+h1. DISCLAIMER
+
+*Note:* This project is discontinued. All code may still be re-used, but it wont be improved. I suggest you find indiviual libraries for your needs.
+
 h1. SocialLua
 
 SocialLua is a set of modules designed to make it easy for you to use the APIs of internet sites and services with ease. It is managed by "Linus Sjögren":http://www.github.com/thelinx and "Bart van Strien":http://www.github.com/bartbes.
